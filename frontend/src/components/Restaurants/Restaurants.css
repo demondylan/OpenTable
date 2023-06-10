@@ -1,0 +1,237 @@
+
+
+a:link {
+    text-decoration: none;
+  }
+  
+  a:visited {
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: none;
+  }
+  
+  a:active {
+    text-decoration: none;
+  }
+
+#spots-flex {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2%;
+    padding-top: 50px;
+}
+.allspots {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-basis: 24.5%;
+    padding-bottom: 15px;
+    border: 1px solid #d8d9db;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+}
+.allspots img {
+    display: flex;
+    flex-basis: 100%;
+    width: 250px;
+    height: 150px;
+}
+.allspots .city {
+    display: flex;
+    align-self: flex-start;
+    flex-basis: 25%;
+    width: 260px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.allspots .city .location {
+color: black;
+font-weight: bold;
+}
+.allspots .city .ratingsbox {
+    color: black;
+    }
+
+.allspots .price span {
+font-weight: bold;
+}
+.allspots .price p {
+    color: black;
+}
+
+.fa {
+color: black    
+}
+.allspots .state {
+    align-self: flex-start;
+    flex-basis: 25%;
+}
+.allspots .rating {
+    display: flex;
+    align-self: flex-end;
+    text-align: right;
+    justify-items: flex-end;
+    flex-basis: 50%;
+}
+.allspots .price {
+    display: flex;
+    flex-basis: 100%;
+    align-items: flex-start;
+}
+.updatebutton button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+}
+.updatebutton button a {
+    color: black;
+}
+.deletebutton button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+}
+.deletebutton button a {
+    color: black;
+}
+p span {
+    font-weight: bold;
+}
+.previewImage {
+    height: 30px;
+    width: 30px; 
+}
+.form {
+    display: flex;
+    width: 150px;
+    height: 100px;
+    position: relative;
+    left: 25%;
+    margin-left: -100px;
+    top: 25%;
+    margin-top: -50px;
+    padding: 100px;
+    flex-direction: column;
+}
+.currentSpot img {
+    width: 250px;
+    height: 200px;
+ }
+.buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2%;
+    position: relative;
+    justify-content: flex-start;
+}
+.tooltip span {
+    display:none;
+}
+.tooltip:hover span {
+    display:block;
+    position:fixed;
+    overflow:hidden;
+}
+.deletespot {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+.deletebuttons {
+    display: flex;
+    position: relative;
+}
+.reservebox {
+    display: flex;
+    flex-direction: column;
+ justify-content: flex-end;
+    flex-wrap: wrap;
+    border: 2px solid red;
+    width: 200px;
+    position: relative;
+}
+.ownerreserves {
+    display: flex;
+    justify-content: space-between;
+}
+.detailimage {
+
+    display: flex;
+}
+
+.detailimage img {
+
+    width: 200px;
+}
+.ratingreviews {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.detaildescription {
+
+    padding-bottom: 50px;
+}
+.reviewbox {
+    border-top: 2px solid rgb(11, 11, 11);
+    height: 100px;
+    padding: 100px
+}
+.eachreviewbox {
+    border-bottom: 2px solid gray;
+}
+.postreviewbutton {
+    /* padding: 100px; */
+}
+.createbutton {
+    padding-top: 10px;
+
+}
+.getLoc {
+    cursor: pointer;
+background-color: white;
+border-radius: 25px;
+border: 2px solid gray;
+}
+
+.createbutton button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+}
+.reservebutton {
+    padding-top: 10px;
+    
+}
+.reservebutton button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+}
+.reviewdate {
+    color: gray;
+}
+.reviewname {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.numberofreviews {
+    display: flex;
+    position: relative;
+    font-size: 22px;
+    font-weight: bolder;
+}
+.dot {
+    display: flex;
+    position: relative;
+    padding: 5px;
+    font-size: 8px;
+    flex-wrap: wrap;
+    align-content: space-around;
+}

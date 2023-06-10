@@ -1,0 +1,113 @@
+
+.hidden{
+    visibility: hidden;
+}
+#Header {
+    position: relative;
+  border-bottom: thin solid gray;
+  height: 75px;
+
+}
+.createspotbutton {
+    display: flex;
+    height: 20px;
+}
+.createspotbutton button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+}
+.createspotbutton button a {
+    color: black;
+}
+.dropDown button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+}
+.dropDown button:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+    cursor: pointer;
+  }
+.Logo {
+    float: left;
+    height: 75px;
+    width: 200px; 
+}
+
+#userCorner {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2%;
+    justify-content: flex-end;
+    position: relative;
+}
+.bars {
+    display: flex;
+    gap: 10%;
+    position:relative;
+
+}
+.userIcon {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2%;
+    float: right;
+    width: 50px;
+    position: relative;
+}
+li {
+    inline-size: 100px;
+    overflow-wrap: break-word;
+}
+ul.profile-dropdown {
+    background-color: white;
+    font-size: 12px;
+    font-style: italic;
+    color: black;
+    position: relative;
+   right: 60px;
+   padding-inline-start: 20px;
+    text-decoration: none;
+    display: flex;
+    border-radius: 25px;
+    border: 2px solid gray;
+    width: 100px;
+    list-style-type: none;
+    z-index: 999;
+    flex-direction: column;
+}
+
+.dropDown {
+    position: relative;
+    display: inline-block;
+    max-width: 60px;
+}
+.managespots {
+    display: flex;
+    position: relative;
+    left: -10px;
+    padding: 10px;
+    padding-top: 5px;
+}
+.managespots a {
+    color: black;
+}
+.welcome {
+    padding-top: 10px;
+    font-weight: bold;
+
+}
+.logoutbutton {
+    position: relative;
+    left: 5px;
+    padding-bottom: 10px;
+
+}
+.dropdownButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}

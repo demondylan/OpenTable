@@ -31,10 +31,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       open: {
-        type: Sequelize.DATE
+        type: Sequelize.TIME
       },
       close: {
-        type: Sequelize.DATE
+        type: Sequelize.TIME
       },
       phone: {
         type: Sequelize.STRING

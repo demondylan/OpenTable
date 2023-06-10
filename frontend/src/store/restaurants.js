@@ -31,13 +31,14 @@ export const getRestaurant = (restaurantid) => async dispatch => {
 };
 
 export const createRestaurant = (restaurantData) => async dispatch => {
-    const { address, city, zip_code, description, logo, food_type, name, open, state, close, phone } = restaurantData;
+    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type } = restaurantData;
     const response = await csrfFetch(`/api/restaurants`, {
         method: 'POST',
-        body: JSON.stringify({ address, city, zip_code, description, logo, food_type, name, open, state, close, phone }),
+        body: JSON.stringify({ address, city, zip_code, description, open, close, name, phone, state, logo, food_type }),
     })
     if (response.ok) {
         const newRestaurant = await response.json();
+        console.log(newRestaurant)
         dispatch(findRestaurant(newRestaurant));
         return newRestaurant;
     }

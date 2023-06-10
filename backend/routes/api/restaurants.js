@@ -154,7 +154,7 @@ router.get('/', async (req, res, next) => {
       res.status(404).json({ message: "Restaurant couldn't be found", status: 404 })
     }
     if(restaurants.owner_id === req.user.id){
-    await spot.destroy()
+    await restaurants.destroy()
     return res.json(restaurants)
   } else {
     res.status(401).json({ message: "You must be the owner to delete the restaurant", status: 401 })
@@ -162,22 +162,11 @@ router.get('/', async (req, res, next) => {
   })
   
   router.post('/', requireAuth, validateRestaurant, async (req, res, next) => {
-    const { address, city, state, zip_code, phone, open, close, name, description, food_type, logo } = req.body
+    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type } = req.body
     // console.log(user)
   
     const newRestaurant = await Restaurant.create({
-      owner_id: req.user.id,
-      name,
-      address,
-      city,
-      state,
-      zip_code,
-      phone,
-      open,
-      close,
-      food_type,
-      description,
-      logo
+      owner_id: req.user.id, address, city, zip_code, description, open, close, name, phone, state, logo, food_type
     })
     return res.json(newRestaurant)
   
@@ -189,7 +178,7 @@ router.get('/', async (req, res, next) => {
       res.status(404).json({ message: "Restaurant couldn't be found", status: 404 })
     }
   
-    const reviews = await Review.findAll({ where: { [Op.and]: [{ userid: req.user.id }, { restaurant_id: id }] } })
+    const reviews = await Review.findAll({ where: { [Op.and]: [{ user_id: req.user.id }, { restaurant_id: id }] } })
     if (reviews.length > 0) {
       res.status(403).json({ message: "Review exists", status: 403 })
     } else {

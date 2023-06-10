@@ -4,11 +4,13 @@ import thunk from "redux-thunk";
 import sessionReducer from './session';
 import restaurantReducer from "./restaurants";
 import reviewReducer from "./reviews";
+import searchbarReducer from "./searchbar";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   restaurants: restaurantReducer,
-  reviews: reviewReducer
+  reviews: reviewReducer,
+  searchbar: searchbarReducer
 });
 
 let enhancer;

@@ -1,6 +1,6 @@
 const express = require("express");
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { Spot, SpotImage, User, sequelize, Review, ReviewImage } = require("../../db/models");
+const { Favorite, Reservation, User, sequelize, Review, Restaurant } = require("../../db/models");
 const { check } = require("express-validator");
 const sequelized = require("sequelize");
 const { handleValidationErrors } = require("../../utils/validation");
@@ -35,7 +35,7 @@ router.delete('/:reviewsId', async (req, res) => {
         res.status(404).json({ message: "Review couldn't be found", status: 404 })
     }
 
-    if(review.userid === req.user.id){
+    if(review.user_id === req.user.id){
         await review.destroy()
         res.json(review)
     }else{
@@ -64,45 +64,20 @@ router.put('/:reviewsid', requireAuth, async (req, res, next) => {
     return res.json(reviews)
 
 });
-router.get('/:spotid/reviews', async (req, res, next) => {
-    const id = req.params.spotid;
-    const spots = await Spot.findAll({
+router.get('/:restaurantid/reviews', async (req, res, next) => {
+    const id = req.params.restaurantid;
+    const restaurants = await Restaurant.findAll({
         where: {
           id: id
         }
       })
-      for await (let spot of spots) {
+      for await (let restaurant of restaurants) {
         const reviews = await Review.findAll({
-                 where: {spotid: spot.id}
+                 where: {restaurant_id: restaurant.id}
               })
         
-              if (reviews.length) {
-                 let sum = 0
-        
-                 reviews.forEach((review) => {
-                 sum += review.stars
-              })
-                 sum = sum / reviews.length
-                 spot.dataValues.AvgRatiing = sum
-              } else {
-                 spot.dataValues.AvgRatiing = 0
-              }
-              const previewImages = await SpotImage.findAll({
-                where: {
-                  spotid: req.user.id,
-                   preview: true,
-                },
-                attributes: ["url"],
-              });
-              
-              if (previewImages.length) {
-                const image = previewImages.map((value) => value.url);
-                spot.dataValues.previewImage = image[0];
-              } else {
-                spot.dataValues.previewImage = "No Image Url";
-              }
         }
-    return res.json(spots)
+    return res.json(restaurants);
 
 })
 
