@@ -31,14 +31,13 @@ export const getRestaurant = (restaurantid) => async dispatch => {
 };
 
 export const createRestaurant = (restaurantData) => async dispatch => {
-    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type } = restaurantData;
+    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat, lng } = restaurantData;
     const response = await csrfFetch(`/api/restaurants`, {
         method: 'POST',
-        body: JSON.stringify({ address, city, zip_code, description, open, close, name, phone, state, logo, food_type }),
+        body: JSON.stringify({ address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat, lng }),
     })
     if (response.ok) {
         const newRestaurant = await response.json();
-        console.log(newRestaurant)
         dispatch(findRestaurant(newRestaurant));
         return newRestaurant;
     }
@@ -52,11 +51,11 @@ const UPDATED_RESTAURANT = 'restaurant/updateRestaurant'
     }
 }
 export const editRestaurant = (restaurantData) => async dispatch => {
-    const { address, city, zip_code, description, open, close, name, logo, state, phone } = restaurantData;
-
+    const { address, city, zip_code, description, open, close, name, logo, state, phone, rating } = restaurantData;
+console.log(restaurantData);
     const response = await csrfFetch(`/api/restaurants/${restaurantData.id}`, {
         method: 'PUT',
-        body: JSON.stringify({ address, city, zip_code, description, open, close, name, logo, state, phone })
+        body: JSON.stringify({ address, city, zip_code, description, open, close, name, logo, state, phone, rating })
     })
     const newRestaurant = await response.json()
     if (response.ok) {
@@ -91,27 +90,30 @@ export const deleteRestaurant = (restaurant) => async dispatch => {
         dispatch(deletedRestaurant(data))
     }
 }
-
-const restaurantsReducer = (state = {}, action) => {
-    let newState = {}
+const initialState = {};
+const restaurantsReducer = (state = initialState, action) => {
     switch (action.type) {
-        case GET_ALL_RESTAURANTS: 
-        Object.values(action.restaurants).forEach(restaurant => newState[restaurant.id] = restaurant)
-        return {...newState}
-        case FIND_RESTAURANT: 
-            newState = {...state}
-            newState[action.restaurant.id] = action.restaurant
-            return newState[action.restaurant.id]
-        case UPDATED_RESTAURANT: 
-            return {...state, [action.restaurant.id]: {...state, ...action.restaurant}}
-
-            case DELETED_RESTAURANT:
-                newState = {...state}
-                delete newState[action.restaurant.id]
-                return newState
-        default:
-            return state;
+      case GET_ALL_RESTAURANTS: {
+        const restaurants = action.restaurants;
+        const newState = restaurants.reduce((newState, restaurant) => {
+          return { ...newState, [restaurant.id]: restaurant };
+        }, {});
+        return { ...state, ...newState };
+      }
+      case FIND_RESTAURANT:
+      case UPDATED_RESTAURANT: {
+        const restaurant = action.restaurant;
+        return { ...state, [restaurant.id]: restaurant };
+      }
+      case DELETED_RESTAURANT: {
+        const restaurantId = action.restaurant.id;
+        const newState = { ...state };
+        delete newState[restaurantId];
+        return newState;
+      }
+      default:
+        return state;
     }
-};
+  };
 
 export default restaurantsReducer;

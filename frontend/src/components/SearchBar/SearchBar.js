@@ -22,17 +22,17 @@ export default function SearchBar() {
     list: []
   })
 
-  const songsObj = useSelector(state => state.searchbar)
-  const songsArr = Object.values(songsObj);
+  const searchBarObj = useSelector(state => state.searchbar)
+  const searchesArr = Object.values(searchBarObj);
 
  
 
   const handleChange = (e) => {
     e.preventDefault();
     setSearchInput(e.target.value);
-    const results = songsArr.filter(song => {
-      if (e.target.value === "") return song
-      if(song.name.toLowerCase().includes(e.target.value.toLowerCase()) || song.city.toLowerCase().includes(e.target.value.toLowerCase()) || song.zip_code.includes(e.target.value))
+    const results = searchesArr.filter(search => {
+      if (e.target.value === "") return search
+      if(search.name.toLowerCase().includes(e.target.value.toLowerCase()) || search.food_type.toLowerCase().includes(e.target.value.toLowerCase()) || search.city.toLowerCase().includes(e.target.value.toLowerCase()) || search.zip_code.includes(e.target.value))
       return true
     })
     setState({
@@ -40,19 +40,6 @@ export default function SearchBar() {
       list: results
     })
   }
-
-  const handleAddClick = async (song) => {
-    await dispatch(getRestaurant())
-   
-    localStorage.setItem('recentSearch', song.name);
-
-    setState({
-      query: "",
-      list: []
-    })
-    setSearchInput("")
-    history.push(`/restaurants/${song.id}`)
-  };
 
 
   const [showComponent, setShowComponent] = useState(
@@ -85,8 +72,6 @@ export default function SearchBar() {
     const openingHour = parseInt(restaurant.open.split(':')[0]);
     const closingHour = parseInt(restaurant.close.split(':')[0]);
     
-    console.log(currentHour, openingHour, closingHour);
-
     if (currentHour >= openingHour && currentHour < closingHour) {
       return "Open";
     } else {
@@ -127,26 +112,26 @@ export default function SearchBar() {
             </div>
             <input
               type="text"
-              placeholder={"What restauraunt are you looking for?"}
+              placeholder={"What restauraunt are you looking for? (Search by name, city, zip code, or food type)"}
               className="search-input"
               value={searchInput}
               onChange={handleChange}
             />
-               <GetLocation/>
+               
           </div>
 
           <ul className="search-song-result" >
-            {(state.query === '' ? "" : state.list.slice(0, 13).map(song => (
+            {(state.query === '' ? "" : state.list.slice(0, 13).map(search => (
               (
                 
                 <div className="allspots">
-                <NavLink to={`/restaurants/${song.id}`}>
-                  <img src={song.logo} onError={({ currentTarget }) => {
+                <NavLink to={`/restaurants/${search.id}`}>
+                  <img src={search.logo} onError={({ currentTarget }) => {
           currentTarget.onerror = null; // prevents looping
           currentTarget.src='https://www.oklahomajoes.com/media/catalog/product/placeholder/default/image-not-available-black.png';
         }}/>
-                 <div className="city"> <p className="location">{song.city}, {song.state}</p><p className="ratingsbox"><i className="fa fa-star" aria-hidden="true"></i>{!song.rating ? "No" : Math.round(`${song.rating}` / .10) * .10} STARS</p></div>
-                 <div className="price"> <p>{getStatus(song)} <span>{getTime(song.open)}</span>  -  <span>{getTime(song.close)}</span> </p></div>
+                 <div className="city"> <p className="location">{search.city}, {search.state}</p><p className="ratingsbox"><i className="fa fa-star" aria-hidden="true"></i>{!search.rating ? "No" : Math.round(`${search.rating}` / .10) * .10} STARS</p></div>
+                 <div className="price"> <p>{getStatus(search)} <span>{getTime(search.open)}</span>  -  <span>{getTime(search.close)}</span> </p></div>
                 </NavLink>
                 </div>
 

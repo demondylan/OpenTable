@@ -54,8 +54,8 @@
 }
 
 .search-song-result {
-    display: flex;
-    position: relative;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  flex-wrap: nowrap;
 }

@@ -1,3 +1,4 @@
+import * as restaurantActions from "./store/restaurants";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
@@ -17,13 +18,14 @@ function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
-    dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
+    dispatch(sessionActions.restoreUser()).then(dispatch(restaurantActions.getALLRestaurants())).then(() => setIsLoaded(true));
   }, [dispatch]);
 
   return (
     <>
       <Navigation isLoaded={isLoaded} />
       <SearchBar/>
+      <GetLocation/>
       {isLoaded && (
         <Switch>
           <Route exact path="/login">
@@ -42,7 +44,7 @@ function App() {
           <EditRestaurant/>
         </Route>
           <Route exact path="/restaurants/:restaurantId">
-            <FindRestaurant/>
+            <FindRestaurant />
           </Route>
           <Route exact path="/restaurants"> 
             <Home />

@@ -6,6 +6,7 @@ import './Restaurants.css';
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
+import Geocode from "react-geocode";
 
 const CreateRestaurant = ({ formType }) => {
   const history = useHistory();
@@ -21,15 +22,43 @@ const CreateRestaurant = ({ formType }) => {
   const [logo, setLogo] = useState("");
   const [food_type, setFood_type] = useState("");
   const [state, setState] = useState("");
+  const [lat, setLat] = useState(0.0);
+  const [lng, setLng] = useState(0.0);
+  // Geocode.setApiKey("AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw");
+  // Geocode.setLanguage("en");
+  // Geocode.setLocationType("ROOFTOP");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const restaurant = { address, city, zip_code, description, open, close, name, phone, state, logo, food_type};
-    let newRestaurant = await dispatch(createRestaurant(restaurant))
-    if (newRestaurant) {
-      let restaurantId = newRestaurant.id
-      history.push(`/restaurants/${restaurantId}`);
-    //  dispatch(getRestaurant(restaurantId))
+    const GeoAddress = `${address}, ${city}, ${state}`;
+    const encodedAddress = encodeURIComponent(GeoAddress);
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw`;
+  
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+  
+      if (data.status === 'OK' && data.results.length > 0) {
+        const location = data.results[0].geometry.location;
+        const latitudeRes = location.lat;
+        const longitudeRes = location.lng;
+        setLat(latitudeRes);
+        setLng(longitudeRes);
+        console.log(`Latitude: ${latitudeRes}`);
+        console.log(`Longitude: ${longitudeRes}`);
+  
+        const restaurant = { address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat: latitudeRes, lng: longitudeRes };
+        let newRestaurant = await dispatch(createRestaurant(restaurant));
+  
+        if (newRestaurant) {
+          let restaurantId = newRestaurant.id;
+          history.push(`/restaurants/${restaurantId}`);
+        }
+      } else {
+        console.log('Unable to geocode the address.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 

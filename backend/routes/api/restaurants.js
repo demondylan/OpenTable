@@ -162,11 +162,11 @@ router.get('/', async (req, res, next) => {
   })
   
   router.post('/', requireAuth, validateRestaurant, async (req, res, next) => {
-    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type } = req.body
+    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat, lng } = req.body
     // console.log(user)
   
     const newRestaurant = await Restaurant.create({
-      owner_id: req.user.id, address, city, zip_code, description, open, close, name, phone, state, logo, food_type
+      owner_id: req.user.id, address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat, lng
     })
     return res.json(newRestaurant)
   
@@ -246,6 +246,7 @@ router.get('/', async (req, res, next) => {
       food_type: req.body.food_type,
       description: req.body.description,
       logo: req.body.logo,
+      rating: req.body.rating, 
       createdAt: sequelized.literal("CURRENT_TIMESTAMP"),
       updatedAt: sequelized.literal("CURRENT_TIMESTAMP")
     });

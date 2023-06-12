@@ -1,53 +1,167 @@
-import React, { Component } from 'react'
-import { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
+import * as restaurantActions from '../../store/restaurants';
+import * as searchbarActions from '../../store/searchbar';
+import { NavLink } from 'react-router-dom';
 import './Restaurants.css';
 
 const GetLocation = () => {
+  const dispatch = useDispatch();
+  const restaurants = useSelector((state) => Object.values(state.restaurants));
+  const [sortedRestaurants, setSortedRestaurants] = useState([]);
+  const [showRestaurants, setShowRestaurants] = useState(false);
 
-    const [latitude, setlatitude] = useState("");
-    const [longitude, setlongitude] = useState("");
-    const [reslatitude, setReslatitude] = useState("");
-    const [reslongitude, setReslongitude] = useState("");
-    let restaurants = useSelector((state) => state.restaurants)
-    restaurants = Object.values(restaurants)
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(restaurantActions.getALLRestaurants());
+      await dispatch(searchbarActions.getALLRestaurants());
+    };
 
-async function position() {
-    await navigator.geolocation.getCurrentPosition(
-      position => { setlatitude(position.coords.latitude)
-      setlongitude(position.coords.longitude)
-      }
-    );
-    console.log(latitude, longitude);
+    fetchData();
+  }, [dispatch]);
+
+  const handlePosition = async () => {
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+  
+      const { latitude, longitude } = position.coords;
+  
+      // Store latitude and longitude values in cookies
+      Cookies.set("latitude", latitude);
+      Cookies.set("longitude", longitude);
+  
+      const sorted = sortRestaurantsByDistance(restaurants, latitude, longitude);
+      setSortedRestaurants(sorted);
+      setShowRestaurants(!showRestaurants);
+    } catch (error) {
+      console.error("Error getting user location:", error);
+    }
+  };
+  
+
+  function calculateDistance(lat1, lon1, lat2, lon2, unit) {
+    var radlat1 = Math.PI * lat1 / 180;
+    var radlat2 = Math.PI * lat2 / 180;
+    var theta = lon1 - lon2;
+    var radtheta = Math.PI * theta / 180;
+    var dist =
+      Math.sin(radlat1) * Math.sin(radlat2) +
+      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist);
+    dist = dist * 180 / Math.PI;
+    dist = dist * 60 * 1.1515;
+    if (unit === "K") {
+      dist = dist * 1.609344;
+    }
+    if (unit === "M") {
+      dist = dist * 0.8684;
+    }
+    return dist;
   }
+  
+  const toRadians = (degrees) => {
+    return degrees * (Math.PI / 180);
+  };
+  const getStatus = (restaurant) => {
+    const currentTime = new Date();
+    const openingTime = new Date();
+    const closingTime = new Date();
+
+    openingTime.setHours(
+      parseInt(restaurant.open.split(':')[0]),
+      parseInt(restaurant.open.split(':')[1])
+    );
+    closingTime.setHours(
+      parseInt(restaurant.close.split(':')[0]),
+      parseInt(restaurant.close.split(':')[1])
+    );
+
+    if (currentTime >= openingTime && currentTime < closingTime) {
+      return (
+        'Open ' +
+        openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) +
+        '-' +
+        closingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      );
+    } else {
+      return 'Closed Opens At ' + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  };
+  const sortRestaurantsByDistance = (latitude, longitude) => {
+    return [...restaurants].sort((a, b) => {
+      const distanceA = calculateDistance(
+        parseFloat(a.lat),
+        parseFloat(a.lng),
+        latitude,
+        longitude,
+        'M'
+      );
+      const distanceB = calculateDistance(
+        parseFloat(b.lat),
+        parseFloat(b.lng),
+        latitude,
+        longitude,
+        'M'
+      );
+  
+      return distanceA - distanceB;
+    });
+  };
  
-  function distance(lat1, lon1, lat2, lon2, unit) {
-    var radlat1 = Math.PI * lat1/180
-    var radlat2 = Math.PI * lat2/180
-    var theta = lon1-lon2
-    var radtheta = Math.PI * theta/180
-    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    dist = Math.acos(dist)
-    dist = dist * 180/Math.PI
-    dist = dist * 60 * 1.1515
-    if (unit=="K") { dist = dist * 1.609344 }
-    if (unit=="M") { dist = dist * 0.8684 }
-    return dist
-}
-function getCoordinates(address){
-    fetch("https://maps.googleapis.com/maps/api/geocode/json?address="+address+'&key='+'AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw')
-      .then(response => response.json())
-      .then(data => {
-        setReslatitude(data.results.geometry.location.lat)
-      setReslongitude(data.results.geometry.location.lng)
-      })
-  }
-    return (
-      <div>
-        <button onClick={position} className='getLoc'>Get My Location</button>
-      </div>
-    );
-  }
-
+  return (
+    <div>
+      <button onClick={handlePosition} className='getLoc'>
+        {showRestaurants ? 'Hide Restaurants' : 'Show Restaurants Near Me'}
+      </button>
+      {showRestaurants && sortedRestaurants.length > 0 && (
+        <>
+        <h1> Restaurants Closest To You.... </h1>
+        <div id='spots-flex'>
+          {sortedRestaurants.map((restaurant) => (
+            <div key={restaurant.id} className='allspots'>
+              <NavLink to={`/restaurants/${restaurant.id}`}>
+                <img
+                  src={restaurant.logo || 'https://www.oklahomajoes.com/media/catalog/product/placeholder/default/image-not-available-black.png'}
+                  alt='Restaurant Logo'
+                  onError={(event) => {
+                    event.target.onerror = null; // Prevents looping
+                    event.target.src =
+                      'https://www.oklahomajoes.com/media/catalog/product/placeholder/default/image-not-available-black.png';
+                  }}
+                />
+                <div className='city'>
+                  <p className='location'>
+                    {restaurant.name}, {restaurant.city}
+                  </p>
+                  <p className='ratingsbox'>
+                    <i className='fa fa-star' aria-hidden='true'></i>
+                    {!restaurant.rating ? 'No' : restaurant.rating} STARS
+                  </p>
+                </div>
+                <div className='price'>
+                  <p>
+                    {getStatus(restaurant)} |{' '}
+                    {calculateDistance(
+                      Cookies.get('latitude'),
+                      Cookies.get('longitude'),
+                      restaurant.latitude,
+                      restaurant.longitude,
+                      'M'
+                    ).toFixed(2)}{' '}
+                    miles
+                  </p>
+                </div>
+              </NavLink>
+            </div>
+          ))}
+        </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 export default GetLocation;
