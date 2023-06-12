@@ -2,12 +2,12 @@ import { csrfFetch } from './csrf';
 
 const GET_ALL_RESTAURANTS = 'restaurants/getALLRestaurants';
 
-const loadRestaurants = (restaurants) => {
+ const loadRestaurants = (restaurants) => {
     return {
-      type: GET_ALL_RESTAURANTS,
-      restaurants: Object.values(restaurants) // Convert the object values to an array
-    };
-  };
+        type: GET_ALL_RESTAURANTS,
+        restaurants
+    }
+};
 
 export const getALLRestaurants = () => async dispatch => {
     const response = await fetch("/api/restaurants");
@@ -92,14 +92,11 @@ export const deleteRestaurant = (restaurant) => async dispatch => {
 }
 const initialState = {};
 const restaurantsReducer = (state = initialState, action) => {
+    let newState = {}
     switch (action.type) {
-      case GET_ALL_RESTAURANTS: {
-        const restaurants = action.restaurants;
-        const newState = restaurants.reduce((newState, restaurant) => {
-          return { ...newState, [restaurant.id]: restaurant };
-        }, {});
-        return { ...state, ...newState };
-      }
+      case GET_ALL_RESTAURANTS: 
+        Object.values(action.restaurants).forEach(restaurant => newState[restaurant.id] = restaurant)
+        return {...newState}
       case FIND_RESTAURANT:
       case UPDATED_RESTAURANT: {
         const restaurant = action.restaurant;
