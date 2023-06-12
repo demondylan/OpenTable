@@ -138,7 +138,7 @@ const GetLocation = () => {
                   </p>
                   <p className='ratingsbox'>
                     <i className='fa fa-star' aria-hidden='true'></i>
-                    {!restaurant.rating ? 'No' : restaurant.rating} STARS
+                    {!restaurant.rating ? "No Rating" : `Overall Rating: ${restaurant.rating}`} 
                   </p>
                 </div>
                 <div className='price'>

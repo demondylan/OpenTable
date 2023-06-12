@@ -33,7 +33,7 @@ function Home() {
     if (currentTime >= openingTime && currentTime < closingTime) {
       return "Open " + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + "-" + closingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } else {
-      return "Closed Opens At " + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return "Closed Opens Tomorrow At " + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
   }
 
@@ -133,6 +133,7 @@ function Home() {
     <>
       <h1>All Restaurants</h1>
       <div className="slideshow-buttons">
+      <div className="edit-review-button">
         <button
           onClick={handleClickPrev}
           disabled={currentSlide === 0}
@@ -143,6 +144,8 @@ function Home() {
         >
           Previous
         </button>
+        </div>
+        <div className="edit-review-button">
         <button
           onClick={handleClickNext}
           disabled={currentSlide >= restaurants.length - 4}
@@ -153,6 +156,7 @@ function Home() {
         >
           Next
         </button>
+        </div>
       </div>
       <div id="spots-flex" className="restaurant-container">
         {isLoaded &&
@@ -172,7 +176,7 @@ function Home() {
                 <p className="location">{restaurant.name}, {restaurant.city}</p>
                 <p className="ratingsbox">
                   <i className="fa fa-star" aria-hidden="true"></i>
-                  {!restaurant.rating ? "No" : restaurant.rating} STARS
+                  {!restaurant.rating ? "No Rating" : `Overall Rating: ${restaurant.rating}`} 
                 </p>
               </div>
               <div className="price">

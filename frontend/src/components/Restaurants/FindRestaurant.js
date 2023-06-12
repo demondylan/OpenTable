@@ -57,7 +57,20 @@ const FindRestaurant = ({ isPageLoaded }) => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw",
   });
+  function getStatus(restaurant, status) {
+    const currentTime = new Date();
+    const openingTime = new Date();
+    const closingTime = new Date();
 
+    openingTime.setHours(parseInt(restaurant.open.split(':')[0]), parseInt(restaurant.open.split(':')[1]));
+    closingTime.setHours(parseInt(restaurant.close.split(':')[0]), parseInt(restaurant.close.split(':')[1]));
+
+    if (currentTime >= openingTime && currentTime < closingTime) {
+      return "Open " + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + "-" + closingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else {
+      return "Closed Opens Tomorrow At " + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }
   const onLoad = (marker) => {
     console.log("marker: ", marker);
   };
@@ -96,7 +109,7 @@ const FindRestaurant = ({ isPageLoaded }) => {
             </div>
             <div className="ownerreserves">
               <div className="reservebox">
-                <p>{restaurant.price} night</p>
+                <p>{getStatus(restaurant)}</p>
                 <div className="ratingreviews">
                   <p>Rating: {!restaurant.rating ? "No" : restaurant.rating}</p>
                   Reviews: {filteredReviews.length}
@@ -109,7 +122,7 @@ const FindRestaurant = ({ isPageLoaded }) => {
             </div>
             <div className="reviewNcreate">
               <div className="numberofreviews">
-                <i className="fa fa-star" aria-hidden="true"></i> <div>{!restaurant.rating ? "No Stars" : restaurant.rating}</div>
+                <i className="fa fa-star" aria-hidden="true"></i> <div>Overall Rating: {!restaurant.rating ? "No Stars" : restaurant.rating}</div>
                 <div className="dot"> <i className="fa fa-circle" aria-hidden="true"></i> </div>
                 {filteredReviews.length} reviews
               </div>
@@ -132,7 +145,7 @@ const FindRestaurant = ({ isPageLoaded }) => {
                       {`${getMonthName(review.updatedAt.slice(0, 7).split("-").reverse()[0])} ${review.updatedAt.slice(5, 7)} ${review.updatedAt.slice(0, 4)}`}
                     </div>
                   </div>
-                  <div className="ratingsbox">
+                  <div className="ratingsboxreview">
                     <div className="bold">Value Rating:</div>
                     <div className="redbold">{review.value_rating}</div>
                     <div className="bold">Food Rating:</div>
@@ -145,18 +158,22 @@ const FindRestaurant = ({ isPageLoaded }) => {
                   <p>{review.message}</p>
                   <div className="reviewbuttons">
                     {sessionUser && sessionUser.id === review.user_id && (
-                      <OpenMenu
-                        itemText="Edit Your Review"
-                        onItemClick={closeMenu}
-                        modalComponent={<EditReview reviewId={review.id} />}
-                      />
-                    )}
+ <div className="edit-review-button">
+ <OpenMenu
+   itemText="Edit Your Review"
+   onItemClick={closeMenu}
+   modalComponent={<EditReview reviewId={review.id} />}
+ />
+</div>
+)}
                     {sessionUser && sessionUser.id === review.user_id && (
+                       <div className="edit-review-button">
                       <OpenMenu
                         itemText="Delete"
                         onItemClick={closeMenu}
                         modalComponent={<DeleteReview reviewId={review.id} />}
                       />
+                      </div>
                     )}
                   </div>
                 </div>

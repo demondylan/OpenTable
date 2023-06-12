@@ -92,31 +92,25 @@ export const deleteRestaurant = (restaurant) => async dispatch => {
 }
 const initialState = {};
 const restaurantsReducer = (state = initialState, action) => {
+    let newState = {}
     switch (action.type) {
-        case GET_ALL_RESTAURANTS:{
-            const newState = { ...state };
-            action.restaurants.forEach((restaurant) => {
-                newState[restaurant.id] = restaurant;
-            });
-            return newState;
-          }
-        case FIND_RESTAURANT:{
-            const newState = { ...state };
-            return { ...newState, [action.restaurant.id]: action.restaurant };
-          }
-        case UPDATED_RESTAURANT: 
-        {
-            const newState = { ...state}
-              return {...newState, [action.restaurant.id]: action.restaurant}
-          }
-            case DELETED_RESTAURANT:{
-                const newState = { ...state };
-                delete newState[action.restaurant.id];
-                return newState;
-              }
-        default:
-            return state;
+      case GET_ALL_RESTAURANTS: 
+        Object.values(action.restaurants).forEach(restaurant => newState[restaurant.id] = restaurant)
+        return {...newState}
+      case FIND_RESTAURANT:
+      case UPDATED_RESTAURANT: {
+        const restaurant = action.restaurant;
+        return { ...state, [restaurant.id]: restaurant };
+      }
+      case DELETED_RESTAURANT: {
+        const restaurantId = action.restaurant.id;
+        const newState = { ...state };
+        delete newState[restaurantId];
+        return newState;
+      }
+      default:
+        return state;
     }
-};
+  };
 
 export default restaurantsReducer;

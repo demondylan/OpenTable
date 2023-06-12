@@ -310,6 +310,13 @@ border: 2px solid gray;
     position: relative;
     justify-content: space-evenly;
     padding-bottom: 25px;
+    width: 100px;
+}
+.ratingsboxreview {
+    display: flex;
+    position: relative;
+    justify-content: space-evenly;
+    padding-bottom: 25px;
 }
 .nameNdate {
     display: flex;
@@ -382,4 +389,9 @@ border: 2px solid gray;
     flex: 0 0 auto;
     width: 300px;
     margin-right: 10px;
+  }
+  .edit-review-button button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
   }
