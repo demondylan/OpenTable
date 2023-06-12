@@ -2,12 +2,12 @@ import { csrfFetch } from './csrf';
 
 const GET_ALL_RESTAURANTS = 'restaurants/getALLRestaurants';
 
- const loadRestaurants = (restaurants) => {
+const loadRestaurants = (restaurants) => {
     return {
-        type: GET_ALL_RESTAURANTS,
-        restaurants
-    }
-};
+      type: GET_ALL_RESTAURANTS,
+      restaurants: Object.values(restaurants) // Convert the object values to an array
+    };
+  };
 
 export const getALLRestaurants = () => async dispatch => {
     const response = await fetch("/api/restaurants");
