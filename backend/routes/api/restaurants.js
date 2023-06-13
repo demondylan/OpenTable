@@ -246,7 +246,8 @@ router.get('/', async (req, res, next) => {
       food_type: req.body.food_type,
       description: req.body.description,
       logo: req.body.logo,
-      rating: req.body.rating, 
+      rating: req.body.rating,
+      food_type_id: req.body.food_type,
       createdAt: sequelized.literal("CURRENT_TIMESTAMP"),
       updatedAt: sequelized.literal("CURRENT_TIMESTAMP")
     });

@@ -135,6 +135,7 @@ const CreateRestaurant = ({ formType }) => {
             <input
               type="text"
               placeholder="Description"
+              required
               value={description}
               onChange={e => setDescription(e.target.value)}
             />
@@ -178,6 +179,7 @@ const CreateRestaurant = ({ formType }) => {
             Food Type  <input
               type="text"
               placeholder="Food Type"
+              required
               value={food_type}
               onChange={e => setFood_type(e.target.value)}
             />

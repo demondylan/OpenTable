@@ -51,11 +51,11 @@ const UPDATED_RESTAURANT = 'restaurant/updateRestaurant'
     }
 }
 export const editRestaurant = (restaurantData) => async dispatch => {
-    const { address, city, zip_code, description, open, close, name, logo, state, phone, rating } = restaurantData;
+    const { address, city, zip_code, description, open, close, name, logo, state, phone, rating, food_type } = restaurantData;
 console.log(restaurantData);
     const response = await csrfFetch(`/api/restaurants/${restaurantData.id}`, {
         method: 'PUT',
-        body: JSON.stringify({ address, city, zip_code, description, open, close, name, logo, state, phone, rating })
+        body: JSON.stringify({ address, city, zip_code, description, open, close, name, logo, state, phone, rating, food_type })
     })
     const newRestaurant = await response.json()
     if (response.ok) {
