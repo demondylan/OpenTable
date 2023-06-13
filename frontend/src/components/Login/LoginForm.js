@@ -13,24 +13,31 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const { closeModal } = useModal();
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginError, setLoginError] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors([]);
+    setErrorMessage("");
+    setLoginError(""); // Reset the login error
+  
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal).then(history.push('/'))
+      .then(closeModal)
+      .then(history.push('/'))
       .catch(async (res) => {
-          const data = await res.json();
-          if (data && data.errors)  setErrors(data.errors); 
-            
-          
+        const data = await res.json();
+        if (res.status === 401) {
+          setLoginError("Invalid username or password");
+        } else if (data && data.errors) {
+          setErrors(data.errors);
         }
-      );
+      });
   };
 
   return (
     <>
     <div className="loginpage">
+    {loginError && <div className="login-error">{loginError}</div>}
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
         <ul>
