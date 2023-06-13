@@ -25,27 +25,27 @@ const FindRestaurant = ({ isPageLoaded }) => {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   const center = useMemo(() => ({ lat: restaurant?.lat, lng: restaurant?.lng }), [restaurant?.lat, restaurant?.lng]);
+
+
+
+  const [isLoading, setIsLoading] = useState(true);
+  
+
   const allReviews = Object.values(reviews);
-
-
-
-  const [filteredReviews, setFilteredReviews] = useState([]);
-
-
+  const filteredReviews = useMemo(() => allReviews.filter(review => review.restaurant_id == restaurantId), [allReviews, restaurantId]);
+  
   useEffect(() => {
+    setIsLoading(true);
+  
     const fetchData = async () => {
       await dispatch(restaurantActions.getRestaurant(restaurantId));
       await dispatch(reviewActions.getAllReviews(restaurantId));
       await dispatch(searchbarActions.getALLRestaurants());
+      setIsLoading(false);
     };
-
+  
     fetchData();
   }, [dispatch, restaurantId]);
-
-  useEffect(() => {
-    const filteredReviews = allReviews.filter(review => review.restaurant_id == restaurantId);
-    setFilteredReviews(filteredReviews);
-  }, [restaurantId]);
 
   const checkUser = filteredReviews.filter(review => sessionUser && review.user_id === sessionUser.id);
 
@@ -54,9 +54,7 @@ const FindRestaurant = ({ isPageLoaded }) => {
     return months[num - 1];
   }
 
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw",
-  });
+  
   function getStatus(restaurant, status) {
     const currentTime = new Date();
     const openingTime = new Date();
@@ -75,10 +73,14 @@ const FindRestaurant = ({ isPageLoaded }) => {
     console.log("marker: ", marker);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>; // Render a loading indicator
+  }
+
   return (
     <>
       <div>
-        {restaurant && isLoaded && !loadError && (
+        {restaurant &&  (
           <div>
             <div className="backgroundlogo">
               <img
@@ -181,7 +183,7 @@ const FindRestaurant = ({ isPageLoaded }) => {
             </div>
           </div>
         )}
-        {loadError && <div>Error loading Google Maps</div>}
+
       </div>
     </>
   );
