@@ -10,7 +10,7 @@ const GET_ALL_RESTAURANTS = 'searchbar/getALLRestaurants';
 };
 
 export const getALLRestaurants = () => async dispatch => {
-    const response = await fetch("/api/restaurants");
+    const response = await csrfFetch("/api/restaurants/");
         const data = await response.json();
         dispatch(loadRestaurants(data));
 };
