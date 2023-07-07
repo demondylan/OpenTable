@@ -6,84 +6,140 @@ import { useState } from "react";
 import { useModal } from "../../Context/Modal";
 import { useDispatch, useSelector } from 'react-redux';
 
-function PostReview(restaurantid) {
+function PostReview({ restaurantId }) {
     const dispatch = useDispatch();
-    const { closeModal } = useModal();
-    const [message, setMessage] = useState('')
-    const [value_rating, setValue_rating] = useState(1)
-    const [food_rating, setFood_rating] = useState(1)
-    const [service_rating, setService_rating] = useState(1)
-    const [ambience_rating, setAmbience_rating] = useState(1)
-    const updateMessage = (e) => setMessage(e.target.value)
-    const updateValue_rating = (e) => setValue_rating(e.target.value)
-    const updateFood_rating = (e) => setFood_rating(e.target.value)
-    const updateService_rating = (e) => setService_rating(e.target.value)
-    const updateAmbience_rating = (e) => setAmbience_rating(e.target.value)
-    const reviews = useSelector((state) => state.reviews)
-    const allReviews = Object.values(reviews)
-    const oldReview = allReviews.filter(review => review.id == restaurantid.reviewId)
-    const restaurants = useSelector((state) => state.restaurants)
-    const getALLRestaurants = Object.values(restaurants)
-    const olderRestaurant = getALLRestaurants.filter(restaurant => restaurant.id == oldReview[0].restaurant_id)
-    const oldRestaurant = olderRestaurant[0];
-    const [address, setAddress] = useState(oldRestaurant.address);
-    const [city, setCity] = useState(oldRestaurant.city);
-    const [state, setState] = useState(oldRestaurant.state);
-    const [zip_code, setZip_code] = useState(oldRestaurant.zip_code);
-    const [open, setOpen] = useState(oldRestaurant.open);
-    const [close, setClose] = useState(oldRestaurant.close);
-    const [name, setName] = useState(oldRestaurant.name);
-    const [description, setDescription] = useState(oldRestaurant.description);
-    const [phone, setPhone] = useState(oldRestaurant.phone)
-    const [food_type, setFood_type] = useState(oldRestaurant.food_type);
-    const [logo, setLogo] = useState(oldRestaurant.logo)
-    console.log(oldRestaurant)
-    function getRating(reviews) {
-        let rating = 0;
-        for (let i = 0; i < reviews.length; i++ ) {
-            let oldRating = (reviews[i].value_rating + reviews[i].food_rating + reviews[i].service_rating + reviews[i].ambience_rating)
-            rating += oldRating/4
-        }
-        return (rating/reviews.length).toFixed(1)
-    }
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const payload = {
-restaurantid, value_rating, food_rating, service_rating, ambience_rating, message
-        }
-     
+    const { closeModal } = useModal('PostReview');
+    const [message, setMessage] = useState('');
+    const [value_rating, setValue_rating] = useState(1);
+    const [food_rating, setFood_rating] = useState(1);
+    const [service_rating, setService_rating] = useState(1);
+    const [ambience_rating, setAmbience_rating] = useState(1);
   
-       let updatedReview = await dispatch(reviewActions.newReview(payload))
-       if (updatedReview) {
-        const rating = getRating(allReviews)
-        const newRestaurant = {
-            ...oldRestaurant,
-            address,
-            city,
-            state,
-            zip_code,
-            open,
-            close,
-            name,
-            description,
-            phone,
-            food_type,
-            logo,
-            rating,
-        };
-        let updatedRating = await dispatch(restaurantActions.editRestaurant(newRestaurant))
-        if(updatedRating) {
-        return dispatch(restaurantActions.getRestaurant(oldRestaurant.id))
-        .then(dispatch(reviewActions.getAllReviews(oldRestaurant.id)))
-            .then(closeModal)
-            .catch();
-        }
-    }
-    };
+    const updateMessage = (e) => setMessage(e.target.value);
+    const updateValue_rating = (e) => setValue_rating(parseInt(e.target.value));
+    const updateFood_rating = (e) => setFood_rating(parseInt(e.target.value));
+    const updateService_rating = (e) => setService_rating(parseInt(e.target.value));
+    const updateAmbience_rating = (e) => setAmbience_rating(parseInt(e.target.value));
+    const reviews = useSelector((state) => state.reviews);
+    const allReviews = Object.values(reviews);
+    const oldReview = allReviews.find((review) => review.id == restaurantId);
+  
+    // Access restaurant_id from oldReview
+    const restaurant_id = oldReview ? oldReview.restaurant_id : '';
+  
+    const restaurants = useSelector((state) => state.restaurants);
+    const restaurantArray = Object.values(restaurants); // Initialize restaurantArray
+  
+    const oldRestaurant = restaurantArray.find((restaurant) => restaurant.id === restaurant_id);
+ 
 
+    if (!oldRestaurant) {
+        // Handle the error or set default values
+        return <div>Restaurant not found</div>;
+      }
+
+      const {
+        address = '',
+        city = '',
+        state = '',
+        zip_code = '',
+        open = '',
+        close = '',
+        name = '',
+        description = '',
+        phone = '',
+        food_type = '',
+        logo = '',
+      } = oldRestaurant;
+      
+ function getRating(reviews, newReview) {
+  const existingReview = reviews.find(review => review.id === newReview.review.id);
+
+  let ratingSum = 0;
+  let totalRatings = reviews.length * 4; // Multiply by 4 to account for all four rating categories
+
+  for (let i = 0; i < reviews.length; i++) {
+    const review = reviews[i];
+
+    if (existingReview && review.id === existingReview.id) {
+      // Exclude the existing review from the calculation
+      totalRatings -= 4;
+      continue;
+    }
+
+    ratingSum +=
+      review.value_rating +
+      review.food_rating +
+      review.service_rating +
+      review.ambience_rating;
+  }
+
+  const newRating = newReview.review;
+
+  ratingSum +=
+    newRating.value_rating +
+    newRating.food_rating +
+    newRating.service_rating +
+    newRating.ambience_rating;
+  totalRatings += 4; // Increment by 4 for the new review
+
+  const overallRating = ratingSum / totalRatings;
+
+  return overallRating.toFixed(1);
+}
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        const payload = {
+          restaurantId,
+          value_rating,
+          food_rating,
+          service_rating,
+          ambience_rating,
+          message,
+        };
+      
+        try {
+          let newRestaurant; // Declare newRestaurant variable
+      
+          const [updatedReview] = await Promise.all([
+            dispatch(reviewActions.newReview(payload)),
+          ]);
+          if (updatedReview) {
+            const rating = getRating(allReviews, updatedReview);
+            newRestaurant = {
+              ...oldRestaurant,
+              address,
+              city,
+              state,
+              zip_code,
+              open,
+              close,
+              name,
+              description,
+              phone,
+              food_type,
+              logo,
+              rating: rating,
+            };
+
+            const updatedRating = await dispatch(
+              restaurantActions.editRestaurant(newRestaurant)
+            );
+      
+            if (updatedRating) {
+              return dispatch(restaurantActions.getRestaurant(oldRestaurant.id))
+                .then(dispatch(reviewActions.getAllReviews(oldRestaurant.id)))
+                .then(closeModal)
+                .catch();
+            }
+          }
+        } catch (error) {
+          console.error(error);
+          // Handle the error here, such as displaying an error message to the user
+        }
+      };
+      
 
     
     return (

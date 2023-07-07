@@ -128,15 +128,15 @@ const FindRestaurant = ({ isPageLoaded }) => {
                 <div className="dot"> <i className="fa fa-circle" aria-hidden="true"></i> </div>
                 {filteredReviews.length} reviews
               </div>
-              <div className="postreviewbutton">
                 {sessionUser && checkUser.length === 0 && sessionUser.id !== restaurant.owner_id && (
+                                <div className="postreviewbutton">
                   <OpenMenu
                     itemText="Post Your Review"
                     onItemClick={closeMenu}
-                    modalComponent={<PostReview reviewId={restaurantId} />}
+                    modalComponent={<PostReview restaurantId={restaurantId} />}
                   />
+                                </div>
                 )}
-              </div>
             </div>
             <div className="reviewbox">
               {filteredReviews.map((review) => (

@@ -61,7 +61,8 @@ router.get('/', async (req, res, next) => {
     size = Number(size)
     const restaurants = await Restaurant.findAll({
       include: [
-        {model: Review},
+            { model: Review },
+            { model: Reservation }
     ],
       limit: size,
       offset: (page - 1) * size,
@@ -129,7 +130,41 @@ router.get('/', async (req, res, next) => {
     }
     res.json({ Restaurants: restaurants })
   })
+  router.get('/search-results', async (req, res, next) => {
+    const { query, date, time, seats } = req.query;
   
+    // Handle the search results based on the provided parameters
+    // Use the query, date, time, and seats values to query your data source (e.g., database)
+    // Return the matching search results as a response
+    
+    try {
+      const restaurants = await Restaurant.findAll({
+        where: {
+          name: {
+            [Op.iLike]: `%${query}%` // Use case-insensitive search for restaurant name
+          },
+          open: {
+            [Op.lte]: time // Filter restaurants that are open at the specified time
+          }
+        },
+        include: {
+          model: Reservation,
+          where: {
+            date,
+            seats: {
+              [Op.gte]: seats // Filter reservations with available seats
+            }
+          },
+          required: false // Include restaurants even if they have no reservations
+        }
+      });
+  
+      return res.json(restaurants);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
   router.get('/:restaurantsid', async (req, res, next) => {
     const id = req.params.restaurantsid;
     const restaurants = await Restaurant.findOne({

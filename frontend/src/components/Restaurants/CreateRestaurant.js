@@ -11,28 +11,59 @@ import Geocode from "react-geocode";
 const CreateRestaurant = ({ formType }) => {
   const history = useHistory();
   const dispatch = useDispatch()
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [zip_code, setZip_code] = useState("");
-  const [description, setDescription] = useState("");
-  const [open, setOpen] = useState("");
-  const [close, setClose] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [logo, setLogo] = useState("");
-  const [food_type, setFood_type] = useState("");
-  const [state, setState] = useState("");
-  const [lat, setLat] = useState(0.0);
-  const [lng, setLng] = useState(0.0);
-  // Geocode.setApiKey("AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw");
-  // Geocode.setLanguage("en");
-  // Geocode.setLocationType("ROOFTOP");
+  const [restaurantData, setRestaurantData] = useState({
+    address: "",
+    city: "",
+    zip_code: "",
+    description: "",
+    open: "",
+    close: "",
+    name: "",
+    phone: "",
+    logo: "",
+    food_type: "",
+    state: "",
+    lat: 0.0,
+    lng: 0.0,
+    openingHours: [
+      { day: 'Monday', open: '', close: '' },
+      { day: 'Tuesday', open: '', close: '' },
+      { day: 'Wednesday', open: '', close: '' },
+      { day: 'Thursday', open: '', close: '' },
+      { day: 'Friday', open: '', close: '' },
+      { day: 'Saturday', open: '', close: '' },
+      { day: 'Sunday', open: '', close: '' },
+    ]
+  });
+
+  const handleOpeningTimeChange = (index, value) => {
+    const updatedOpeningHours = [...restaurantData.openingHours];
+    updatedOpeningHours[index].open = value;
+    setRestaurantData(prevData => ({ ...prevData, openingHours: updatedOpeningHours }));
+  };
+
+  const handleClosingTimeChange = (index, value) => {
+    const updatedOpeningHours = [...restaurantData.openingHours];
+    updatedOpeningHours[index].close = value;
+    setRestaurantData(prevData => ({ ...prevData, openingHours: updatedOpeningHours }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRestaurantData(prevData => ({ ...prevData, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const GeoAddress = `${address}, ${city}, ${state}`;
+    const formattedOpeningHours = restaurantData.openingHours.map(({ day, open, close }) => ({
+      day,
+      open: open ? new Date(`1970-01-01T${open}:00`) : null,
+      close: close ? new Date(`1970-01-01T${close}:00`) : null,
+    }));
+    
+    const GeoAddress = `${restaurantData.address}, ${restaurantData.city}, ${restaurantData.state}`;
     const encodedAddress = encodeURIComponent(GeoAddress);
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyC5C0oGe2ocK8EuDGIljCwsiXrWJ48gPWw`;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=YOUR_API_KEY`;
   
     try {
       const response = await fetch(apiUrl);
@@ -42,12 +73,16 @@ const CreateRestaurant = ({ formType }) => {
         const location = data.results[0].geometry.location;
         const latitudeRes = location.lat;
         const longitudeRes = location.lng;
-        setLat(latitudeRes);
-        setLng(longitudeRes);
+        setRestaurantData(prevData => ({ ...prevData, lat: latitudeRes, lng: longitudeRes }));
         console.log(`Latitude: ${latitudeRes}`);
         console.log(`Longitude: ${longitudeRes}`);
   
-        const restaurant = { address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat: latitudeRes, lng: longitudeRes };
+        const restaurant = {
+          ...restaurantData,
+          openingHours: formattedOpeningHours,
+          lat: latitudeRes,
+          lng: longitudeRes,
+        };
         let newRestaurant = await dispatch(createRestaurant(restaurant));
   
         if (newRestaurant) {
@@ -61,7 +96,13 @@ const CreateRestaurant = ({ formType }) => {
       console.error('Error:', error);
     }
   };
-
+  const handleTimePickerClick = (e) => {
+    const containerElement = e.currentTarget;
+    const inputElement = containerElement.querySelector('input[type="time"]');
+    if (inputElement) {
+      inputElement.click();
+    }
+  };
   return (
     <div className='form'>
       <section>
@@ -71,10 +112,11 @@ const CreateRestaurant = ({ formType }) => {
             Street Address
             <input
               type="text"
+              name="address"
               placeholder="Address"
               required
-              value={address}
-              onChange={e => setAddress(e.target.value)}
+              value={restaurantData.address}
+              onChange={handleChange}
             />
           </label>
           <br />
@@ -82,10 +124,11 @@ const CreateRestaurant = ({ formType }) => {
             City
             <input
               type="text"
+              name="city"
               placeholder="City"
               required
-              value={city}
-              onChange={e => setCity(e.target.value)}
+              value={restaurantData.city}
+              onChange={handleChange}
             />
           </label>
           <br />
@@ -93,10 +136,11 @@ const CreateRestaurant = ({ formType }) => {
             State
             <input
               type="text"
+              name="state"
               placeholder="State"
               required
-              value={state}
-              onChange={e => setState(e.target.value)}
+              value={restaurantData.state}
+              onChange={handleChange}
             />
           </label>
           <br />
@@ -104,40 +148,54 @@ const CreateRestaurant = ({ formType }) => {
             Zip Code
             <input
               type="text"
+              name="zip_code"
               placeholder="Zip Code"
               required
-              value={zip_code}
-              onChange={e => setZip_code(e.target.value)}
-            />
-
-          </label>
-          <br />
-          <label>
-            Opens
-            <TimePicker
-              required
-              onChange={setOpen}
-              value={open}
+              value={restaurantData.zip_code}
+              onChange={handleChange}
             />
           </label>
           <br />
-          <label>
-            Closes
-            <TimePicker
-              required
-              onChange={setClose}
-              value={close}
-            />
-          </label>
+          {restaurantData.openingHours.map((day, index) => (
+  <div key={index}>
+    <label>
+      {day.day} Opens
+      <div className="time-picker" onClick={handleTimePickerClick}>
+        <input
+          type="time"
+          required
+          value={day.open}
+          onChange={(e) => handleOpeningTimeChange(index, e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
+    </label>
+    <br />
+    <label>
+      {day.day} Closes
+      <div className="time-picker" onClick={handleTimePickerClick}>
+        <input
+          type="time"
+          required
+          value={day.close}
+          onChange={(e) => handleClosingTimeChange(index, e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
+    </label>
+    <br />
+  </div>
+))}
           <br />
           <label>
             Describe your place to guests
             <input
               type="text"
+              name="description"
               placeholder="Description"
               required
-              value={description}
-              onChange={e => setDescription(e.target.value)}
+              value={restaurantData.description}
+              onChange={handleChange}
             />
           </label>
           <br />
@@ -145,21 +203,23 @@ const CreateRestaurant = ({ formType }) => {
             Restaurant Name
             <input
               type="text"
+              name="name"
               placeholder="Name of your Restaurant"
               required
-              value={name}
-              onChange={e => setName(e.target.value)}
+              value={restaurantData.name}
+              onChange={handleChange}
             />
           </label>
           <br />
           <label>
-           Phone number
+            Phone number
             <input
               type="number"
+              name="phone"
               placeholder="Phone Number"
               required
-              value={phone || ''}
-              onChange={e => setPhone(e.target.value)}
+              value={restaurantData.phone || ''}
+              onChange={handleChange}
             />
           </label>
           <br />
@@ -168,24 +228,28 @@ const CreateRestaurant = ({ formType }) => {
             <br></br>
             <input
               type="text"
+              name="logo"
               placeholder="Logo"
               required
-              value={logo}
-              onChange={e => setLogo(e.target.value)}
+              value={restaurantData.logo}
+              onChange={handleChange}
             />
           </label>
           <br />
           <label>
-            Food Type  <input
+            Food Type
+            <input
               type="text"
+              name="food_type"
               placeholder="Food Type"
               required
-              value={food_type}
-              onChange={e => setFood_type(e.target.value)}
+              value={restaurantData.food_type}
+              onChange={handleChange}
             />
           </label>
           <br></br>
-          <div className='createbutton'><button type="submit">Create new Restaurant</button>
+          <div className='createbutton'>
+            <button type="submit">Create new Restaurant</button>
           </div>
         </form>
       </section>

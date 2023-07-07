@@ -1,61 +1,119 @@
-.search-container {
-    display: flex;
-    align-items: center;
-    background-color: #333;
-    padding: 0.5rem;
-    border-radius: 50px;
-    height: 100px;
-    border: 2px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    position: relative;
-  }
-  
-  .search-icon {
-    color: #999;
-    margin-right: 0.5rem;
-  }
-  
-  .search-input {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    color: #fff;
-    font-size: 1rem;
-    width: 100%;
-  }
 
-  
-  .search-input::placeholder {
-    color: #999;
-    opacity: 0.6;
-  }
 
-  .search-song-link {
-    color: white;
-    text-decoration: none;
+
+.search-header {
+  background: linear-gradient(.647turn,#1a0a47cc,#0d1b4599 .01%,#0d1b45cc 51.04%,#0d1b45 99.1%);
+  padding: 32px 0;
 }
 
-.search-song-link:hover {
-  color: #1db954;
+.searchplan {
+  padding: 16px;
 }
 
-.search-add-button {
-  margin-left: 20px;
-  background-color: #212121;
+.search-text {
   color: #fff;
-  font-size: 14px;
-  border: 1px solid #fff;
-  border-radius: 4px;
-  padding: 4px 8px;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  font-family: BrandonText;
+  font-size: 24px;
+  line-height: 28px;
+  margin-bottom: 16px;
+  text-align: center;
 }
+
+
+.search-input::placeholder {
+  color: #999;
+  opacity: 0.6;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.search-input-container input[type="date"],
+.search-input-container input[type="time"],
+.search-input-container select {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.search-button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.search-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.search-container .search-button {
+  margin-left: 10px;
+}
+
+
+.search-icon {
+  color: #999;
+  margin-right: 6px;
+  margin-top: 2px; /* Add this line to adjust the vertical alignment */
+}
+
+
 
 .search-song-result {
   display: flex;
-  position: relative;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  justify-content: space-between;
+}
+
+.allspots {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.city {
+  display: flex;
+  align-items: center;
+}
+
+.location {
+  margin-right: 8px;
+}
+
+.ratingsbox {
+  display: flex;
+  align-items: center;
+}
+
+.fa-star {
+  color: #ffd700;
+  margin-right: 4px;
+}
+
+.price {
+  margin-top: 8px;
+}
+
+.price span {
+  margin-right: 4px;
 }

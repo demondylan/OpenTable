@@ -30,22 +30,25 @@ function DeleteReview(reviewId) {
     const [food_type, setFood_type] = useState(oldRestaurant?.food_type);
     const [logo, setLogo] = useState(oldRestaurant?.logo)
 
-    function getRating(reviews) {
+    function getRating(reviews, deletedReviewId) {
+        const updatedReviews = reviews.filter(review => review.id !== deletedReviewId);
         let rating = 0;
-        for (let i = 0; i < reviews.length; i++ ) {
-            let oldRating = (reviews[i].value_rating + reviews[i].food_rating + reviews[i].service_rating + reviews[i].ambience_rating)
-            rating += oldRating/4
-            
-            console.log(reviews[i].value_rating, reviews[i].food_rating, reviews[i].service_rating, reviews[i].ambience_rating)
+        for (let i = 0; i < updatedReviews.length; i++) {
+          let oldRating =
+            updatedReviews[i].value_rating +
+            updatedReviews[i].food_rating +
+            updatedReviews[i].service_rating +
+            updatedReviews[i].ambience_rating;
+          rating += oldRating / 4;
         }
-        return (rating/reviews.length).toFixed(1)
-    }
+        return (rating / updatedReviews.length).toFixed(1);
+      }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let updatedReview = await dispatch(reviewActions.deleteReview(reviewId.reviewId))
-    if (updatedReview) {
-        const rating = getRating(allReviews)
+        let updatedReview = await dispatch(reviewActions.deleteReview(reviewId.reviewId));
+        if (updatedReview) {
+          const rating = getRating(allReviews, reviewId.reviewId); 
         const newRestaurant = {
             ...oldRestaurant,
             address,

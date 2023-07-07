@@ -26,21 +26,20 @@ const addReview = (review) => {
     }
 }
 
-export const newReview = (reviewData) => async dispatch => {
-    let { restaurantid, value_rating, food_rating, service_rating, ambience_rating, message } = reviewData
-    console.log(reviewData)
-    restaurantid = Number(restaurantid.reviewId)
-    
-    const response = await csrfFetch(`/api/restaurants/${restaurantid}/reviews`, {
-        method: 'POST',
-        body: JSON.stringify({ value_rating, food_rating, service_rating, ambience_rating, message })
-    })
-    const data = await response.json()
-    if (response.ok) {
-        return dispatch(addReview(data))
-    }
-}
+export const newReview = (reviewData) => async (dispatch) => {
+  let { restaurantId, value_rating, food_rating, service_rating, ambience_rating, message } = reviewData;
+  console.log(restaurantId);
+  const reviewId = Number(restaurantId);
 
+  const response = await csrfFetch(`/api/restaurants/${reviewId}/reviews`, {
+    method: 'POST',
+    body: JSON.stringify({ value_rating, food_rating, service_rating, ambience_rating, message }),
+  });
+  const data = await response.json();
+  if (response.ok) {
+    return dispatch(addReview(data));
+  }
+};
 const DELETED_REVIEW = 'reviews/deleteReview'
 
 const deletedReview = (reviewId) => {

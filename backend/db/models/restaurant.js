@@ -31,8 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     city: DataTypes.STRING,
     state: DataTypes.STRING,
     zip_code: DataTypes.STRING,
-    open: DataTypes.TIME,
-    close: DataTypes.TIME,
+    open: DataTypes.DATE,
+    close: DataTypes.DATE,
+    max_seats: DataTypes.INTEGER,
     phone: DataTypes.STRING,
     food_type: DataTypes.STRING,
     description: DataTypes.STRING,
@@ -43,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     lng: {
       type: DataTypes.FLOAT,
     },
-    rating: DataTypes.DECIMAL(10,1)
+    rating: DataTypes.DECIMAL
   }, {
     sequelize,
     modelName: 'Restaurant',

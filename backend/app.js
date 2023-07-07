@@ -1,5 +1,6 @@
 const express = require('express');
 require('express-async-errors');
+require('./utils/reservationCleanup');
 const morgan = require('morgan');
 const cors = require('cors');
 const csurf = require('csurf');

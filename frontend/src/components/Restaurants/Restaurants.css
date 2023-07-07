@@ -16,14 +16,15 @@ a:link {
     text-decoration: none;
   }
 
-#spots-flex {
+  #spots-flex {
     display: flex;
     width: 100%;
-    gap: 2%;
+    gap: 1%;
     padding-top: 50px;
     flex-direction: row;
-}
-.allspots {
+  }
+  
+  .allspots {
     display: flex;
     position: relative;
     flex-direction: column;
@@ -32,7 +33,24 @@ a:link {
     border: 1px solid #d8d9db;
     border-radius: 0.5rem;
     box-sizing: border-box;
-}
+  }
+  @media only screen and (max-width: 1200px) {
+    .allspots {
+      flex-basis: 32%;
+    }
+  }
+  
+  @media only screen and (max-width: 992px) {
+    .allspots {
+      flex-basis: 48%;
+    }
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .allspots {
+      flex-basis: 100%;
+    }
+  }
 #restaurantslocal {
     display: flex;
     width: 100%;
@@ -105,49 +123,57 @@ color: black
     flex-basis: 100%;
     width: 250px;
     height: 150px;
-}
-.allspots .city {
+  }
+  
+  .allspots .city {
     display: flex;
     align-self: flex-start;
     flex-basis: 25%;
     width: 260px;
     flex-direction: row;
     justify-content: space-between;
-}
-.allspots .city .location {
-color: black;
-font-weight: bold;
-}
-.allspots .city .ratingsbox {
+  }
+  
+  .allspots .city .location {
     color: black;
-    }
-
-.allspots .price span {
-font-weight: bold;
-}
-.allspots .price p {
+    font-weight: bold;
+  }
+  
+  .allspots .city .ratingsbox {
     color: black;
-}
-
-.fa {
-color: black    
-}
-.allspots .state {
+  }
+  
+  .allspots .price span {
+    font-weight: bold;
+  }
+  
+  .allspots .price p {
+    color: black;
+  }
+  
+  .fa {
+    color: black;
+  }
+  
+  .allspots .state {
     align-self: flex-start;
     flex-basis: 25%;
-}
-.allspots .rating {
+  }
+  
+  .allspots .rating {
     display: flex;
     align-self: flex-end;
     text-align: right;
     justify-items: flex-end;
     flex-basis: 50%;
-}
-.allspots .price {
+  }
+  
+  .allspots .price {
     display: flex;
     flex-basis: 100%;
     align-items: flex-start;
-}
+  }
+  
 .updatebutton button {
     background-color: white;
     border-radius: 25px;
@@ -269,8 +295,10 @@ p span {
 .eachreviewbox {
     border-bottom: 2px solid gray;
 }
-.postreviewbutton {
-    /* padding: 100px; */
+.postreviewbutton button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
 }
 .createbutton {
     padding-top: 10px;
@@ -380,18 +408,190 @@ border: 2px solid gray;
   .restaurant-container {
     display: flex;
     flex-wrap: nowrap;
-    overflow-x: auto;
-    max-width: 100%;
-    margin-bottom: 20px;
+    overflow: hidden; /* Hide both horizontal and vertical scrollbars */
+    max-width: calc(100% - 8px); /* Subtract the scrollbar width */
+    position: relative; /* Add relative positioning */
   }
   
   .restaurant-card {
-    flex: 0 0 auto;
-    width: 300px;
-    margin-right: 10px;
+    flex: 0 0 20%; /* Display 4 slides per page */
   }
+  
+  @media screen and (max-width: 768px) {
+    .restaurant-card {
+      flex: 0 0 50%; /* Display 2 slides per page on smaller screens */
+    }
+  }
+
   .edit-review-button button {
     background-color: white;
     border-radius: 25px;
     border: 2px solid gray;
   }
+  .slideshow-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .slideshow-button {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .prev-button {
+    position: absolute;
+    left: 50px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  
+  .next-button {
+    position: absolute;
+    right: -21px;
+    transform: translateX(-50%);
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .slideshow-container {
+      margin-top: 20px;
+    }
+  
+    .prev-button,
+    .next-button {
+      padding: 5px 10px;
+    }
+  }
+  .button-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .restaurantimgcard {
+     width: 234px;
+     height: 132px;
+    width: 100%;
+  }
+  .slideshow-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent line breaks */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    padding-bottom: 20px; /* Add some bottom padding */
+  }
+  .form {
+    display: flex;
+    width: 150px;
+    height: 100px;
+    position: relative;
+    left: 25%;
+    margin-left: -100px;
+    top: 25%;
+    margin-top: -50px;
+    padding: 100px;
+    flex-direction: column;
+  }
+  
+  .form label {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .form input[type="text"],
+  .form input[type="number"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form input[type="submit"] {
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .form input[type="submit"]:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .form .createbutton {
+    padding-top: 10px;
+  }
+  
+  .form .getLoc {
+    cursor: pointer;
+    background-color: white;
+    border-radius: 25px;
+    border: 2px solid gray;
+  }
+  
+  .form .getLoc:hover {
+    background-color: #f5f5f5;
+  }
+  /* Customized time picker styles */
+  .time-picker {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .time-picker-overlay {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
+  }
+
+.time-picker input[type="time"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100px;
+  height: 30px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Styling the arrow icon */
+.time-picker::after {
+  content: "\25BC";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+/* Styling the dropdown */
+.time-picker .time-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 1;
+  display: none;
+  width: 100px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.time-picker:hover .time-dropdown {
+  display: block;
+}
+
+.time-picker .time-dropdown option {
+  padding: 5px;
+}
+
+.time-picker .time-dropdown option:hover {
+  background-color: #f5f5f5;
+}

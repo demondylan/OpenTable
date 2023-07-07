@@ -42,25 +42,7 @@ const GetLocation = () => {
   };
   
 
-  function calculateDistance(lat1, lon1, lat2, lon2, unit) {
-    var radlat1 = Math.PI * lat1 / 180;
-    var radlat2 = Math.PI * lat2 / 180;
-    var theta = lon1 - lon2;
-    var radtheta = Math.PI * theta / 180;
-    var dist =
-      Math.sin(radlat1) * Math.sin(radlat2) +
-      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    dist = Math.acos(dist);
-    dist = dist * 180 / Math.PI;
-    dist = dist * 60 * 1.1515;
-    if (unit === "K") {
-      dist = dist * 1.609344;
-    }
-    if (unit === "M") {
-      dist = dist * 0.8684;
-    }
-    return dist;
-  }
+
   
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
@@ -90,26 +72,48 @@ const GetLocation = () => {
       return 'Closed Opens At ' + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
   };
-  const sortRestaurantsByDistance = (latitude, longitude) => {
+  function calculateDistance(lat1, lon1, lat2, lon2, unit) {
+    var radlat1 = (Math.PI * lat1) / 180;
+    var radlat2 = (Math.PI * lat2) / 180;
+    var theta = lon1 - lon2;
+    var radtheta = (Math.PI * theta) / 180;
+    var dist =
+      Math.sin(radlat1) * Math.sin(radlat2) +
+      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist);
+    dist = (dist * 180) / Math.PI;
+    dist = dist * 60 * 1.1515;
+    if (unit === "K") {
+      dist = dist * 1.609344;
+    }
+    if (unit === "M") {
+      dist = dist * 0.8684;
+    }
+    return dist;
+  }
+
+  function sortRestaurantsByDistance(restaurants) {
+    if (!Cookies.get('latitude') || !Cookies.get('longitude')) return restaurants;
     return [...restaurants].sort((a, b) => {
       const distanceA = calculateDistance(
-        parseFloat(a.lat),
-        parseFloat(a.lng),
-        latitude,
-        longitude,
-        'M'
+        Cookies.get('latitude'),
+        Cookies.get('longitude'),
+        a.lat,
+        a.lng,
+        "M"
       );
       const distanceB = calculateDistance(
-        parseFloat(b.lat),
-        parseFloat(b.lng),
-        latitude,
-        longitude,
-        'M'
+        Cookies.get('latitude'),
+        Cookies.get('longitude'),
+        b.lat,
+        b.lng,
+        "M"
       );
   
       return distanceA - distanceB;
     });
-  };
+  }
+  
  
   return (
     <div>
@@ -147,8 +151,8 @@ const GetLocation = () => {
                     {calculateDistance(
                       Cookies.get('latitude'),
                       Cookies.get('longitude'),
-                      restaurant.latitude,
-                      restaurant.longitude,
+                      restaurant.lat,
+                      restaurant.lng,
                       'M'
                     ).toFixed(2)}{' '}
                     miles

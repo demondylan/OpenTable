@@ -12,6 +12,7 @@ import CreateRestaurant from "./components/Restaurants/CreateRestaurant";
 import EditRestaurant from "./components/Restaurants/EditRestaurant";
 import CurrentUserRestaurants from "./components/Restaurants/CurrentUserRestaurants";
 import SearchBar from './components/SearchBar/SearchBar'
+import SearchResults from './components/SearchBar/SearchResults'
 import GetLocation from './components/Restaurants/GetLocation'
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route exact path ='/restaurants/current'>
             <CurrentUserRestaurants />
           </Route>
+          <Route path="/search-results" exact component={SearchResults} />
           <Route exact path="/restaurants/create">
             <CreateRestaurant/>
           </Route>

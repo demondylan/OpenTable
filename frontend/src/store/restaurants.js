@@ -1,19 +1,21 @@
 import { csrfFetch } from './csrf';
 
-const GET_ALL_RESTAURANTS = 'restaurants/getALLRestaurants';
+const GET_ALL_RESTAURANTS_SUCCESS = 'restaurants/getALLRestaurantsSuccess';
 
- const loadRestaurants = (restaurants) => {
-    return {
-        type: GET_ALL_RESTAURANTS,
-        restaurants
-    }
+const loadRestaurantsSuccess = (restaurants) => {
+  return {
+    type: GET_ALL_RESTAURANTS_SUCCESS,
+    restaurants
+  };
 };
 
-export const getALLRestaurants = () => async dispatch => {
+export const getALLRestaurants = () => async (dispatch) => {
     const response = await fetch("/api/restaurants");
-        const data = await response.json();
-        dispatch(loadRestaurants(data));
-};
+    const data = await response.json();
+    if (response.ok) {
+      dispatch(loadRestaurantsSuccess(data));
+    }
+  };
 
 const FIND_RESTAURANT = 'restaurants/getSingleRestaurant';
 
@@ -43,7 +45,7 @@ export const createRestaurant = (restaurantData) => async dispatch => {
     }
 };
 
-const UPDATED_RESTAURANT = 'restaurant/updateRestaurant'
+const UPDATED_RESTAURANT = 'restaurants/updateRestaurant'
  const updatedRestaurant = (restaurant) => {
     return{
         type: UPDATED_RESTAURANT,
@@ -51,6 +53,7 @@ const UPDATED_RESTAURANT = 'restaurant/updateRestaurant'
     }
 }
 export const editRestaurant = (restaurantData) => async dispatch => {
+    console.log(restaurantData);
     const { address, city, zip_code, description, open, close, name, logo, state, phone, rating, food_type } = restaurantData;
 console.log(restaurantData);
     const response = await csrfFetch(`/api/restaurants/${restaurantData.id}`, {
@@ -94,9 +97,11 @@ const initialState = {};
 const restaurantsReducer = (state = initialState, action) => {
     let newState = {}
     switch (action.type) {
-      case GET_ALL_RESTAURANTS: 
-        Object.values(action.restaurants).forEach(restaurant => newState[restaurant.id] = restaurant)
-        return {...newState}
+        case GET_ALL_RESTAURANTS_SUCCESS:
+            Object.values(action.restaurants).forEach((restaurant) => {
+              newState[restaurant.id] = restaurant;
+            });
+            return { ...newState };
       case FIND_RESTAURANT:
       case UPDATED_RESTAURANT: {
         const restaurant = action.restaurant;

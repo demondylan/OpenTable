@@ -31,10 +31,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       open: {
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       },
       close: {
-        type: Sequelize.TIME
+        type: Sequelize.DATE
+      },
+      max_seats: {
+        type: Sequelize.INTEGER
       },
       phone: {
         type: Sequelize.STRING
@@ -49,7 +52,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       rating: {
-        type: Sequelize.DECIMAL(10,1)
+        type: Sequelize.DECIMAL
       },
       lat: {
         type: Sequelize.FLOAT
