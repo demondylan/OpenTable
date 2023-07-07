@@ -10,16 +10,17 @@ async function deleteExpiredReservations() {
     const expiredReservations = await Reservation.findAll({
       where: {
         date: {
-          [Op.lt]: currentTimeMinusOneHour,
+          [lt]: new Date(Date.now() - 60 * 60 * 1000),
         },
       },
     });
+    
 
     // Delete the expired reservations
     await Reservation.destroy({
       where: {
         date: {
-          [Op.lt]: currentTimeMinusOneHour,
+          [lt]: new Date(Date.now() - 60 * 60 * 1000),
         },
       },
     });
