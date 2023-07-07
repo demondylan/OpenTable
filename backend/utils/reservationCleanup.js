@@ -1,6 +1,6 @@
-const { Reservation } = require("../db/models"); // Assuming you have imported the Reservation model
+const { Reservation, sequelize } = require("../db/models");
+const { Op } = require("sequelize");
 
-// Function to delete expired reservations
 async function deleteExpiredReservations() {
   try {
     // Get the current time minus one hour
@@ -10,17 +10,16 @@ async function deleteExpiredReservations() {
     const expiredReservations = await Reservation.findAll({
       where: {
         date: {
-          [lt]: new Date(Date.now() - 60 * 60 * 1000),
+          [Op.lt]: currentTimeMinusOneHour,
         },
       },
     });
-    
 
     // Delete the expired reservations
     await Reservation.destroy({
       where: {
         date: {
-          [lt]: new Date(Date.now() - 60 * 60 * 1000),
+          [Op.lt]: currentTimeMinusOneHour,
         },
       },
     });
