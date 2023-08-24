@@ -6,14 +6,19 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@react-google-maps/api": "^2.18.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.3.1",
     "geocoder": "^0.2.3",
     "js-cookie": "^3.0.5",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-geocode": "^0.2.3",
@@ -26,9 +31,9 @@
     "redux-thunk": "^2.4.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -47,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "redux-logger": "^3.0.6"
   }
 }

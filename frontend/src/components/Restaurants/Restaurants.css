@@ -242,16 +242,15 @@ p span {
     width: 200px;
 }
 .reservebox {
-    display: flex;
-    flex-direction: column;
- justify-content: flex-end;
-    flex-wrap: wrap;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px #2d333f33;
-    padding: 16px;
-    width: 200px;
-    position: relative;
+  display: flex;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px #2d333f33;
+  padding: 16px;
+  width: 360px;
+  position: relative;
+  flex-direction: column;
+  height: 280px;
 }
 .ownerreserves {
     display: flex;
@@ -268,10 +267,12 @@ p span {
     justify-content: space-between;
 }
 .restarauntname {
-    font-size: 46px;
-    border-bottom: 0.0625rem solid #d8d9db;
-    margin: 0;
-    padding: 32px 0;
+  display: flex;
+  font-size: 46px;
+  border-bottom: 0.0625rem solid #d8d9db;
+  margin: 0;
+  padding: 32px 0;
+  justify-content: space-between;
 }
 .backgroundlogo img {
     width: 100%;
@@ -405,21 +406,25 @@ border: 2px solid gray;
     flex-wrap: wrap;
     justify-content: space-between;
   }
+  .restaurants-container {
+    padding-bottom: 200px;
+    margin-top: 20px; 
+  }
   .restaurant-container {
     display: flex;
     flex-wrap: nowrap;
-    overflow: hidden; /* Hide both horizontal and vertical scrollbars */
-    max-width: calc(100% - 8px); /* Subtract the scrollbar width */
-    position: relative; /* Add relative positioning */
+    overflow: hidden; 
+    max-width: calc(100% - 8px); 
+    position: relative; 
   }
   
   .restaurant-card {
-    flex: 0 0 20%; /* Display 4 slides per page */
+    flex: 0 0 20%; 
   }
   
   @media screen and (max-width: 768px) {
     .restaurant-card {
-      flex: 0 0 50%; /* Display 2 slides per page on smaller screens */
+      flex: 0 0 50%; 
     }
   }
 
@@ -479,9 +484,9 @@ border: 2px solid gray;
   }
   .slideshow-container {
     display: flex;
-    flex-wrap: nowrap; /* Prevent line breaks */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    padding-bottom: 20px; /* Add some bottom padding */
+    flex-wrap: nowrap; 
+    overflow-x: auto; 
+    padding-bottom: 20px; 
   }
   .form {
     display: flex;
@@ -535,11 +540,12 @@ border: 2px solid gray;
   .form .getLoc:hover {
     background-color: #f5f5f5;
   }
-  /* Customized time picker styles */
-  .time-picker {
-    position: relative;
-    display: inline-block;
-  }
+
+.time-picker {
+  display: inline-block;
+  width: 100%;
+  cursor: pointer;
+}
   
   .time-picker-overlay {
     position: absolute;
@@ -560,7 +566,6 @@ border: 2px solid gray;
   outline: none;
 }
 
-/* Styling the arrow icon */
 .time-picker::after {
   content: "\25BC";
   position: absolute;
@@ -570,7 +575,6 @@ border: 2px solid gray;
   font-size: 12px;
 }
 
-/* Styling the dropdown */
 .time-picker .time-dropdown {
   position: absolute;
   top: calc(100% + 5px);
@@ -594,4 +598,260 @@ border: 2px solid gray;
 
 .time-picker .time-dropdown option:hover {
   background-color: #f5f5f5;
+}
+.heart-icon {
+  color: red;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 28px;
+  padding: 0;
+  margin: 0;
+}
+
+.get-location-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.location-card {
+  width: 23%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.location-card img {
+  width: 50%;
+  height: 100px;
+  border-radius: 5px;
+}
+
+.location-details {
+  margin-top: 10px;
+}
+
+.location-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.location-address {
+  font-size: 14px;
+  color: #666;
+}
+
+.location-distance {
+  font-size: 14px;
+  color: #888;
+}
+
+@media screen and (max-width: 1200px) {
+  .location-card {
+    width: 30%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .location-card {
+    width: 45%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .location-card {
+    width: 48%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .location-card {
+    width: 100%;
+  }
+}
+.opening-time {
+  color: green;
+}
+
+.closed-message {
+  color: red;
+}
+.time-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.time-button.hovered-time {
+  background-color: darkred;
+}
+
+.closed-message {
+  color: red;
+  font-size: 16px;
+}
+
+.hovered-time {
+  text-decoration: underline;
+}
+.ownerreserves {
+  margin-top: 20px;
+}
+
+.reservebox {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  height: 200px
+}
+
+.reservebox h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.party-size,
+.date-time {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.party-size label,
+.date-time label {
+  margin-right: 10px;
+}
+
+.party-size select,
+.date-time input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.date-time input[type="date"],
+.date-time input[type="time"] {
+  width: 150px;
+}
+
+.date-time button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.date-time button:hover {
+  background-color: #0056b3;
+}
+
+.booked-times {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 10px;
+  color: #666;
+}
+.latest-reviews-container {
+  display: flex;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.review-card {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.review-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.review-card .review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.review-card .review-header p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.review-card .review-message {
+  margin-bottom: 10px;
+}
+
+.review-card .review-message p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+.review-card .review-message a {
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 5px;
+}
+
+.review-card .box-name-city {
+  margin-bottom: 10px;
+}
+
+.review-card .box-name-city p {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.review-card .food-type p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+.red-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Keep your existing style for clickable-time-button if needed */
+.clickable-time-button {
+  /* Your existing styles here */
 }

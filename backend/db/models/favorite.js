@@ -11,11 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Favorite.belongsTo(models.User, {
-        foreignKey: "user_id"
-      })
+        foreignKey: "user_id",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
+      });
       Favorite.belongsTo(models.Restaurant, {
-        foreignKey: "restaurant_id"
-      })
+        foreignKey: "restaurant_id",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
+      });
     }
   }
   Favorite.init({

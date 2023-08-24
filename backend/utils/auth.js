@@ -30,8 +30,15 @@ const restoreUser = (req, res, next) => {
   const { token } = req.cookies;
   req.user = null;
 
+  if (!token) {
+    // Handle case where token is not present
+    return next();
+  }
+
   return jwt.verify(token, secret, null, async (err, jwtPayload) => {
     if (err) {
+      // Handle case where token is invalid
+      res.clearCookie('token');
       return next();
     }
 
@@ -43,11 +50,14 @@ const restoreUser = (req, res, next) => {
       return next();
     }
 
-    if (!req.user) res.clearCookie('token');
+    if (!req.user) {
+      res.clearCookie('token');
+    }
 
     return next();
   });
 };
+
 
 const requireAuth = function (req, _res, next) {
   if (req.user) return next();

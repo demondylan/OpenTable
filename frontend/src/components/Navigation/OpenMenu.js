@@ -1,12 +1,7 @@
-import React from 'react';
-import { useModal } from '../../Context/Modal';
+import React from "react";
+import { useModal } from "../../Context/Modal";
 
-function OpenMenu({
-  modalComponent,
-  itemText, 
-  onItemClick,
-  onModalClose
-}) {
+function OpenMenu({ modalComponent, itemText, onItemClick, onModalClose }) {
   const { setModalContent, setOnModalClose } = useModal();
 
   const onClick = () => {
@@ -15,9 +10,7 @@ function OpenMenu({
     if (onItemClick) onItemClick();
   };
 
-  return (
-    <button onClick={onClick}>{itemText}</button>
-  );
+  return <button onClick={onClick}>{itemText}</button>;
 }
 
 export default OpenMenu;

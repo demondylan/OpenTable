@@ -21,39 +21,66 @@ const SearchResults = () => {
 
   useEffect(() => {
     // Update the search results based on the search parameters and available restaurants
-    const filteredResults = Object.values(searchbar).filter((restaurant) => {
-      // Convert open and close times to Date objects
-      const openTimeParts = restaurant.open.split(":");
-      const closeTimeParts = restaurant.close.split(":");
-      
-      // Parse hours and minutes from the time parts
-      const openHours = parseInt(openTimeParts[0]);
-      const openMinutes = parseInt(openTimeParts[1]);
-      const closeHours = parseInt(closeTimeParts[0]);
-      const closeMinutes = parseInt(closeTimeParts[1]);
-      
-      // Create Date objects with the current date and parsed time
-      const openTime = new Date();
-      openTime.setHours(openHours, openMinutes, 0, 0);
-      
-      const closeTime = new Date();
-      closeTime.setHours(closeHours, closeMinutes, 0, 0);
-      
-      // Log the converted values
-      console.log("Open Time:", openTime);
-      console.log("Close Time:", closeTime);
+    const selectedDateTime = new Date(selectedDate);
+    const [selectedHour, selectedMinute] = selectedTime.split(":").map(Number);
+    selectedDateTime.setHours(selectedHour, selectedMinute, 0, 0);
+    const selectedDayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][selectedDateTime.getDay()];
   
-      // Rest of the filtering logic...
+    // Filter restaurants by name match
+    const nameMatchResults = Object.values(searchbar).filter((restaurant) =>
+      restaurant.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
   
-      return (
-        restaurant.seats > 0 &&
-        openTime <= new Date(selectedTime) &&
-        closeTime >= new Date(selectedTime)
+    // Sort by name similarity
+    nameMatchResults.sort((a, b) =>
+      a.name.toLowerCase().indexOf(searchInput.toLowerCase()) -
+      b.name.toLowerCase().indexOf(searchInput.toLowerCase())
+    );
+  
+    // Filter and sort remaining restaurants based on availability and other criteria
+    const otherResults = Object.values(searchbar)
+      .filter(restaurant => !nameMatchResults.includes(restaurant))
+      .filter((restaurant) => {
+        const openingHours = restaurant.Openinghours.find(
+          (hours) => hours.day === selectedDayOfWeek
+        );
+  
+        if (!openingHours) {
+          return false; // Restaurant is closed on the selected day
+        }
+  
+        const openTimeParts = openingHours.open.split(":");
+        const closeTimeParts = openingHours.close.split(":");
+        const openHours = parseInt(openTimeParts[0]);
+        const openMinutes = parseInt(openTimeParts[1]);
+        const closeHours = parseInt(closeTimeParts[0]);
+        const closeMinutes = parseInt(closeTimeParts[1]);
+  
+        const openTime = new Date();
+        openTime.setHours(openHours, openMinutes, 0, 0);
+        const closeTime = new Date();
+        closeTime.setHours(closeHours, closeMinutes, 0, 0);
+  
+        const isRestaurantOpen =
+          openTime <= selectedDateTime && closeTime >= selectedDateTime;
+  
+        return (
+          restaurant.seats >= selectedSeats && // Check seats availability
+          isRestaurantOpen
+        );
+      })
+      .sort((a, b) =>
+        a.seats - b.seats || // Sort by available seats
+        Math.abs(a.open - selectedHour) - Math.abs(b.open - selectedHour) || // Sort by closest opening time
+        Math.abs(a.close - selectedHour) - Math.abs(b.close - selectedHour) // Sort by closest closing time
       );
-    });
-
-    setResults(filteredResults); // Update the search results
-  }, [searchbar, selectedTime, selectedSeats]);
+  
+    const finalResults = [...nameMatchResults, ...otherResults];
+  
+    setResults(finalResults); // Update the search results
+  }, [searchbar, searchInput, selectedSeats, selectedTime, selectedDate]);
+  
+  
 
   // Dispatch the getALLRestaurants action when the component mounts
   useEffect(() => {
@@ -66,6 +93,7 @@ const SearchResults = () => {
       <p>
         Search: {searchInput}, Date: {selectedDate}, Time: {selectedTime}, Seats: {selectedSeats}
       </p>
+      {console.log("Results:", results)} {/* Add this line */}
       {results.length > 0 ? (
         <ul>
           {results.map((restaurant) => (

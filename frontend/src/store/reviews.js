@@ -1,5 +1,22 @@
 import { csrfFetch } from "./csrf";
 
+const SET_LATEST_REVIEWS = 'reviews/setLatestReviews';
+
+const setLatestReviews = (reviews) => {
+  return {
+    type: SET_LATEST_REVIEWS,
+    reviews
+  };
+};
+
+export const setLatestReviewsData = (reviews) => async (dispatch) => {
+  // You can sort the reviews here based on the creation date to get the latest ones.
+  // Assuming the reviews have a 'createdAt' property representing the creation date.
+  const sortedReviews = reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const latestReviews = sortedReviews.slice(0, 4); // Get the latest 4 reviews.
+  return dispatch(setLatestReviews(latestReviews));
+};
+
 const GET_ALL_REVIEWS = 'reviews/getReviews'
 
 const getReviews = (reviews) => {
@@ -78,10 +95,16 @@ export const editReview = (reviewData) => async dispatch => {
         return dispatch(updatedReview(newReview))
     }
 }
-const initialState = {};
+const initialState = {
+    latestReviews: []
+  };
 const reviewReducer = (state = initialState, action) => {
     let newState = {}
     switch (action.type) {
+        case SET_LATEST_REVIEWS: {
+            newState = { ...state, latestReviews: action.reviews };
+            return newState;
+          }
         case GET_ALL_REVIEWS: {
             newState = { ...state }
             action.reviews.forEach((review) => {

@@ -30,12 +30,6 @@ module.exports = {
       zip_code: {
         type: Sequelize.STRING
       },
-      open: {
-        type: Sequelize.TIME
-      },
-      close: {
-        type: Sequelize.TIME
-      },
       max_seats: {
         type: Sequelize.INTEGER
       },
@@ -59,6 +53,10 @@ module.exports = {
       },
       lng: {
         type: Sequelize.FLOAT
+      },
+      time_zone: {
+        allowNull: false,
+        type: Sequelize.STRING, // Store the time zone as a string
       },
       createdAt: {
         allowNull: false,

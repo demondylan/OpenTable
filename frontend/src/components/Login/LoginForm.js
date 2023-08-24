@@ -1,10 +1,9 @@
-import * as sessionActions from "../../store/session";
-
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../Context/Modal";
-import "./LoginForm.css";
 import { useHistory } from "react-router-dom";
+import * as sessionActions from "../../store/session";
+import "./LoginForm.css";
 
 function LoginForm() {
   const history = useHistory();
@@ -13,34 +12,26 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const { closeModal } = useModal();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);
-    setErrorMessage("");
-    setLoginError(""); // Reset the login error
-  
-    return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
-      .then(history.push('/'))
-      .catch(async (res) => {
-        const data = await res.json();
-        if (res.status === 401) {
-          setLoginError("Invalid username or password");
-        } else if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
+
+    const res = await dispatch(sessionActions.login({ credential, password }));
+
+    if (res.errors) {
+      setErrors(res.errors);
+    } else {
+      closeModal();
+      history.push("/");
+    }
   };
 
   return (
-    <>
-    <div className="loginpage">
-    {loginError && <div className="login-error">{loginError}</div>}
+    <div className="login-form">
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
-        <ul>
+        <ul className="error-list">
           {errors.map((error, idx) => (
             <li key={idx}>{error}</li>
           ))}
@@ -65,8 +56,8 @@ function LoginForm() {
         </label>
         <button type="submit">Log In</button>
       </form>
-      </div>
-    </>
+    </div>
   );
 }
+
 export default LoginForm;

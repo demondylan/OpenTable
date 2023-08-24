@@ -5,12 +5,14 @@ import sessionReducer from './session';
 import restaurantReducer from "./restaurants";
 import reviewReducer from "./reviews";
 import searchbarReducer from "./searchbar";
+import favoriteReducer from "./favorites";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   restaurants: restaurantReducer,
   reviews: reviewReducer,
-  searchbar: searchbarReducer
+  searchbar: searchbarReducer,
+  favorites: favoriteReducer
 });
 
 let enhancer;

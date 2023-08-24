@@ -1,15 +1,4 @@
 
-
-
-.search-header {
-  background: linear-gradient(.647turn,#1a0a47cc,#0d1b4599 .01%,#0d1b45cc 51.04%,#0d1b45 99.1%);
-  padding: 32px 0;
-}
-
-.searchplan {
-  padding: 16px;
-}
-
 .search-text {
   color: #fff;
   font-family: BrandonText;
@@ -19,10 +8,28 @@
   text-align: center;
 }
 
-
 .search-input::placeholder {
   color: #999;
   opacity: 0.6;
+}
+
+.search-icon {
+  color: #999;
+  margin-right: 6px;
+  margin-top: 2px; /* Add this line to adjust the vertical alignment */
+}
+
+.fa-star {
+  color: #ffd700;
+  margin-right: 4px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .search-input-container {
@@ -32,6 +39,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-right: 10px;
+  margin-bottom: 10px;
   flex-grow: 1;
 }
 
@@ -42,7 +50,17 @@
   outline: none;
   font-size: 16px;
   flex-grow: 1;
+  padding: 8px 16px; /* Added padding to the right side */
 }
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 8px 16px; /* Added padding to the right side */
+  flex-grow: 1;
+}
+
 
 .search-button {
   padding: 8px 16px;
@@ -53,47 +71,46 @@
   cursor: pointer;
 }
 
-.search-container {
+.search-header {
+  background: linear-gradient(.647turn,#1a0a47cc,#0d1b4599 .01%,#0d1b45cc 51.04%,#0d1b45 99.1%);
+  padding: 32px 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-top: 10px;
+  text-align: center;
 }
 
-.search-input {
-  flex-grow: 1;
-  border: none;
-  outline: none;
-  font-size: 16px;
+.searchplan {
+  padding: 16px;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
 }
-
-.search-container .search-button {
-  margin-left: 10px;
-}
-
-
-.search-icon {
-  color: #999;
-  margin-right: 6px;
-  margin-top: 2px; /* Add this line to adjust the vertical alignment */
-}
-
-
 
 .search-song-result {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 16px;
   justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .allspots {
-  width: 100%;
-  margin-bottom: 16px;
+  width: 300px;
+  height: 220px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
 }
 
 .city {
   display: flex;
   align-items: center;
+  margin-top: 8px;
 }
 
 .location {
@@ -103,11 +120,7 @@
 .ratingsbox {
   display: flex;
   align-items: center;
-}
-
-.fa-star {
-  color: #ffd700;
-  margin-right: 4px;
+  margin-top: 4px;
 }
 
 .price {

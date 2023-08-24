@@ -1,83 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Cookies from 'js-cookie';
-import * as restaurantActions from '../../store/restaurants';
-import * as searchbarActions from '../../store/searchbar';
-import { NavLink } from 'react-router-dom';
-import './Restaurants.css';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import * as restaurantActions from "../../store/restaurants";
+import * as searchbarActions from "../../store/searchbar";
+import { NavLink, useLocation } from "react-router-dom";
+import "./Restaurants.css";
 
-const GetLocation = () => {
+function GetLocation() {
   const dispatch = useDispatch();
-  const restaurants = useSelector((state) => Object.values(state.restaurants));
-  const [sortedRestaurants, setSortedRestaurants] = useState([]);
-  const [showRestaurants, setShowRestaurants] = useState(false);
+  const location = useLocation();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
+  const [showLocations, setShowLocations] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const locations = useSelector((state) => Object.values(state.restaurants));
+  const favoriteLocations = useSelector((state) => {
+    const favorites = state.favorites;
+    if (favorites) {
+      return Object.values(favorites).map((favorite) => favorite.Location);
+    } else {
+      return [];
+    }
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(restaurantActions.getALLRestaurants());
       await dispatch(searchbarActions.getALLRestaurants());
+      setIsLoaded(true);
     };
 
     fetchData();
   }, [dispatch]);
 
-  const handlePosition = async () => {
-    try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-  
-      const { latitude, longitude } = position.coords;
-  
-      // Store latitude and longitude values in cookies
-      Cookies.set("latitude", latitude);
-      Cookies.set("longitude", longitude);
-  
-      const sorted = sortRestaurantsByDistance(restaurants, latitude, longitude);
-      setSortedRestaurants(sorted);
-      setShowRestaurants(!showRestaurants);
-    } catch (error) {
-      console.error("Error getting user location:", error);
-    }
-  };
-  
+  useEffect(() => {
+    const getUserLocation = async () => {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
 
+        setUserLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      } catch (error) {
+        console.error("Error getting user location:", error);
+      }
+    };
 
-  
-  const toRadians = (degrees) => {
-    return degrees * (Math.PI / 180);
-  };
-  const getStatus = (restaurant) => {
-    const currentTime = new Date();
-    const openingTime = new Date();
-    const closingTime = new Date();
+    getUserLocation();
+  }, []);
 
-    openingTime.setHours(
-      parseInt(restaurant.open.split(':')[0]),
-      parseInt(restaurant.open.split(':')[1])
-    );
-    closingTime.setHours(
-      parseInt(restaurant.close.split(':')[0]),
-      parseInt(restaurant.close.split(':')[1])
-    );
+  useEffect(() => {
+    setShowLocations(false);
+  }, [location]);
 
-    if (currentTime >= openingTime && currentTime < closingTime) {
-      return (
-        'Open ' +
-        openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) +
-        '-' +
-        closingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      );
-    } else {
-      return 'Closed Opens At ' + openingTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-  };
   function calculateDistance(lat1, lon1, lat2, lon2, unit) {
-    var radlat1 = (Math.PI * lat1) / 180;
-    var radlat2 = (Math.PI * lat2) / 180;
-    var theta = lon1 - lon2;
-    var radtheta = (Math.PI * theta) / 180;
-    var dist =
+    const radlat1 = (Math.PI * lat1) / 180;
+    const radlat2 = (Math.PI * lat2) / 180;
+    const theta = lon1 - lon2;
+    const radtheta = (Math.PI * theta) / 180;
+    let dist =
       Math.sin(radlat1) * Math.sin(radlat2) +
       Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
     dist = Math.acos(dist);
@@ -92,80 +76,104 @@ const GetLocation = () => {
     return dist;
   }
 
-  function sortRestaurantsByDistance(restaurants) {
-    if (!Cookies.get('latitude') || !Cookies.get('longitude')) return restaurants;
-    return [...restaurants].sort((a, b) => {
+  function sortLocationsByDistance(locations) {
+    if (!userLocation) return locations;
+    return [...locations].sort((a, b) => {
       const distanceA = calculateDistance(
-        Cookies.get('latitude'),
-        Cookies.get('longitude'),
+        userLocation.latitude,
+        userLocation.longitude,
         a.lat,
         a.lng,
         "M"
       );
       const distanceB = calculateDistance(
-        Cookies.get('latitude'),
-        Cookies.get('longitude'),
+        userLocation.latitude,
+        userLocation.longitude,
         b.lat,
         b.lng,
         "M"
       );
-  
+
       return distanceA - distanceB;
     });
   }
-  
- 
+
+  const handleClickToggle = () => {
+    setShowLocations(!showLocations);
+    setCurrentSlide(0);
+  };
+
+  const handleClickPrev = () => {
+    setCurrentSlide((prevSlide) => prevSlide - 4);
+  };
+
+  const handleClickNext = () => {
+    setCurrentSlide((prevSlide) => prevSlide + 4);
+  };
+
+  const displayedLocations = locations.slice(currentSlide, currentSlide + 4);
+  const sortedLocations = sortLocationsByDistance(displayedLocations);
+
   return (
-    <div>
-      <button onClick={handlePosition} className='getLoc'>
-        {showRestaurants ? 'Hide Restaurants' : 'Show Restaurants Near Me'}
+    <>
+      <button onClick={handleClickToggle} className="toggle-button slideshow-button">
+        {showLocations ? "Hide Restaurants Near Me" : "Show Restaurants Near Me"}
       </button>
-      {showRestaurants && sortedRestaurants.length > 0 && (
+      {showLocations && (
         <>
-        <h1> Restaurants Closest To You.... </h1>
-        <div id='spots-flex'>
-          {sortedRestaurants.map((restaurant) => (
-            <div key={restaurant.id} className='allspots'>
-              <NavLink to={`/restaurants/${restaurant.id}`}>
-                <img
-                  src={restaurant.logo || 'https://www.oklahomajoes.com/media/catalog/product/placeholder/default/image-not-available-black.png'}
-                  alt='Restaurant Logo'
-                  onError={(event) => {
-                    event.target.onerror = null; // Prevents looping
-                    event.target.src =
-                      'https://www.oklahomajoes.com/media/catalog/product/placeholder/default/image-not-available-black.png';
-                  }}
-                />
-                <div className='city'>
-                  <p className='location'>
-                    {restaurant.name}, {restaurant.city}
-                  </p>
-                  <p className='ratingsbox'>
-                    <i className='fa fa-star' aria-hidden='true'></i>
-                    {!restaurant.rating ? "No Rating" : `Overall Rating: ${restaurant.rating}`} 
-                  </p>
+          <h1>Locations Near Me</h1>
+          <div className="get-location-container">
+            {isLoaded &&
+              sortedLocations.map((location) => (
+                <div key={location.id} className="location-card">
+                  <NavLink to={`/restaurants/${location.id}`}>
+                    <img
+                      src={location.logo}
+                      onError={(event) => {
+                        event.target.onerror = null;
+                        event.target.src =
+                          "https://www.oklahomajoes.com/media/catalog/product/placeholder/default/image-not-available-black.png";
+                      }}
+                      alt="Location Image"
+                    />
+                    <div className="location-details">
+                      <div className="location-name">{location.name}</div>
+                      <div className="location-address">{`${location.address}, ${location.city}, ${location.state}, ${location.zip_code}`}</div>
+                      <div className="location-distance">
+                        {calculateDistance(
+                          userLocation.latitude,
+                          userLocation.longitude,
+                          location.lat,
+                          location.lng,
+                          "M"
+                        ).toFixed(2)}{" "}
+                        miles away
+                      </div>
+                    </div>
+                  </NavLink>
                 </div>
-                <div className='price'>
-                  <p>
-                    {getStatus(restaurant)} |{' '}
-                    {calculateDistance(
-                      Cookies.get('latitude'),
-                      Cookies.get('longitude'),
-                      restaurant.lat,
-                      restaurant.lng,
-                      'M'
-                    ).toFixed(2)}{' '}
-                    miles
-                  </p>
-                </div>
-              </NavLink>
-            </div>
-          ))}
-        </div>
+              ))}
+          </div>
+          <div className="slider-navigation">
+            <button
+              className="slider-button prev-button slideshow-button"
+              onClick={handleClickPrev}
+              disabled={currentSlide === 0}
+            >
+              Prev
+            </button>
+            <button
+              className="slider-button next-button slideshow-button"
+              onClick={handleClickNext}
+              disabled={currentSlide >= locations.length - 4}
+            >
+              Next
+            </button>
+          </div>
         </>
       )}
-    </div>
+    </>
   );
-};
+}
 
 export default GetLocation;

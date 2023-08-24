@@ -1,23 +1,21 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { createRestaurant, getRestaurant } from "../../store/restaurants";
+import { createRestaurant } from "../../store/restaurants";
 import './Restaurants.css';
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import Geocode from "react-geocode";
 
-const CreateRestaurant = ({ formType }) => {
+const CreateRestaurant = () => {
   const history = useHistory();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [restaurantData, setRestaurantData] = useState({
     address: "",
     city: "",
     zip_code: "",
     description: "",
-    open: "",
-    close: "",
     name: "",
     phone: "",
     logo: "",
@@ -25,89 +23,90 @@ const CreateRestaurant = ({ formType }) => {
     state: "",
     lat: 0.0,
     lng: 0.0,
-    openingHours: [
-      { day: 'Monday', open: '', close: '' },
-      { day: 'Tuesday', open: '', close: '' },
-      { day: 'Wednesday', open: '', close: '' },
-      { day: 'Thursday', open: '', close: '' },
-      { day: 'Friday', open: '', close: '' },
-      { day: 'Saturday', open: '', close: '' },
-      { day: 'Sunday', open: '', close: '' },
-    ]
+    OpeningHours: [
+      { day: 'Monday', open: '08:00', close: '20:00' },
+      { day: 'Tuesday', open: '08:00', close: '20:00' },
+      { day: 'Wednesday', open: '08:00', close: '20:00' },
+      { day: 'Thursday', open: '08:00', close: '20:00' },
+      { day: 'Friday', open: '08:00', close: '20:00' },
+      { day: 'Saturday', open: '08:00', close: '20:00' },
+      { day: 'Sunday', open: '08:00', close: '20:00' },
+    ],
   });
 
   const handleOpeningTimeChange = (index, value) => {
-    const updatedOpeningHours = [...restaurantData.openingHours];
+    const updatedOpeningHours = [...restaurantData.OpeningHours];
     updatedOpeningHours[index].open = value;
-    setRestaurantData(prevData => ({ ...prevData, openingHours: updatedOpeningHours }));
+    setRestaurantData((prevData) => ({ ...prevData, OpeningHours: updatedOpeningHours }));
   };
 
   const handleClosingTimeChange = (index, value) => {
-    const updatedOpeningHours = [...restaurantData.openingHours];
+    const updatedOpeningHours = [...restaurantData.OpeningHours];
     updatedOpeningHours[index].close = value;
-    setRestaurantData(prevData => ({ ...prevData, openingHours: updatedOpeningHours }));
+    setRestaurantData((prevData) => ({ ...prevData, OpeningHours: updatedOpeningHours }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setRestaurantData(prevData => ({ ...prevData, [name]: value }));
+    setRestaurantData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedOpeningHours = restaurantData.openingHours.map(({ day, open, close }) => ({
+    const formattedOpeningHours = restaurantData.OpeningHours.map(({ day, open, close }) => ({
       day,
-      open: open ? new Date(`1970-01-01T${open}:00`) : null,
-      close: close ? new Date(`1970-01-01T${close}:00`) : null,
+      open: open ? open : null,
+      close: close ? close : null,
     }));
-    
+
     const GeoAddress = `${restaurantData.address}, ${restaurantData.city}, ${restaurantData.state}`;
     const encodedAddress = encodeURIComponent(GeoAddress);
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=YOUR_API_KEY`;
-  
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`;
+
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-  
-      if (data.status === 'OK' && data.results.length > 0) {
+
+      if (data.status === "OK" && data.results.length > 0) {
         const location = data.results[0].geometry.location;
-        const latitudeRes = location.lat;
-        const longitudeRes = location.lng;
-        setRestaurantData(prevData => ({ ...prevData, lat: latitudeRes, lng: longitudeRes }));
-        console.log(`Latitude: ${latitudeRes}`);
-        console.log(`Longitude: ${longitudeRes}`);
-  
+        const { lat, lng } = location;
+        setRestaurantData((prevData) => ({ ...prevData, lat, lng }));
+        console.log(`Latitude: ${lat}`);
+        console.log(`Longitude: ${lng}`);
+
         const restaurant = {
           ...restaurantData,
-          openingHours: formattedOpeningHours,
-          lat: latitudeRes,
-          lng: longitudeRes,
+          OpeningHours: formattedOpeningHours,
+          lat,
+          lng,
         };
-        let newRestaurant = await dispatch(createRestaurant(restaurant));
-  
+        const newRestaurant = await dispatch(createRestaurant(restaurant));
+
         if (newRestaurant) {
-          let restaurantId = newRestaurant.id;
+          const restaurantId = newRestaurant.id;
           history.push(`/restaurants/${restaurantId}`);
         }
       } else {
-        console.log('Unable to geocode the address.');
+        console.log("Unable to geocode the address.");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
+
   const handleTimePickerClick = (e) => {
     const containerElement = e.currentTarget;
     const inputElement = containerElement.querySelector('input[type="time"]');
     if (inputElement) {
-      inputElement.click();
+      inputElement.focus(); // Focus on the input element
+      inputElement.select(); // Highlight the entire input value
     }
   };
-  return (
-    <div className='form'>
-      <section>
-        <form onSubmit={handleSubmit} >
 
+  return (
+    <div className="form">
+      <section>
+        <form onSubmit={handleSubmit}>
           <label>
             Street Address
             <input
@@ -156,36 +155,38 @@ const CreateRestaurant = ({ formType }) => {
             />
           </label>
           <br />
-          {restaurantData.openingHours.map((day, index) => (
-  <div key={index}>
-    <label>
-      {day.day} Opens
-      <div className="time-picker" onClick={handleTimePickerClick}>
-        <input
-          type="time"
-          required
-          value={day.open}
-          onChange={(e) => handleOpeningTimeChange(index, e.target.value)}
-          onClick={(e) => e.stopPropagation()}
-        />
-      </div>
-    </label>
-    <br />
-    <label>
-      {day.day} Closes
-      <div className="time-picker" onClick={handleTimePickerClick}>
-        <input
-          type="time"
-          required
-          value={day.close}
-          onChange={(e) => handleClosingTimeChange(index, e.target.value)}
-          onClick={(e) => e.stopPropagation()}
-        />
-      </div>
-    </label>
-    <br />
-  </div>
-))}
+          {restaurantData.OpeningHours.map((day, index) => (
+            <div key={index}>
+              <label>
+                {day.day} Opens
+                <div className="time-picker" onClick={handleTimePickerClick}>
+                  <TimePicker
+                    required
+                    disableClock
+                    clearIcon={null}
+                    format="HH:mm"
+                    value={day.open}
+                    onChange={(value) => handleOpeningTimeChange(index, value)}
+                  />
+                </div>
+              </label>
+              <br />
+              <label>
+                {day.day} Closes
+                <div className="time-picker" onClick={handleTimePickerClick}>
+                  <TimePicker
+                    required
+                    disableClock
+                    clearIcon={null}
+                    format="HH:mm"
+                    value={day.close}
+                    onChange={(value) => handleClosingTimeChange(index, value)}
+                  />
+                </div>
+              </label>
+              <br />
+            </div>
+          ))}
           <br />
           <label>
             Describe your place to guests
@@ -225,7 +226,7 @@ const CreateRestaurant = ({ formType }) => {
           <br />
           <label>
             Logo
-            <br></br>
+            <br />
             <input
               type="text"
               name="logo"
@@ -236,25 +237,11 @@ const CreateRestaurant = ({ formType }) => {
             />
           </label>
           <br />
-          <label>
-            Food Type
-            <input
-              type="text"
-              name="food_type"
-              placeholder="Food Type"
-              required
-              value={restaurantData.food_type}
-              onChange={handleChange}
-            />
-          </label>
-          <br></br>
-          <div className='createbutton'>
-            <button type="submit">Create new Restaurant</button>
-          </div>
+          <button className='slideshow-button' type="submit">Create Restaurant</button>
         </form>
       </section>
     </div>
   );
-}
+};
 
 export default CreateRestaurant;

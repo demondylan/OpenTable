@@ -21,7 +21,7 @@ router.get('/current', requireAuth, async (req, res) => {
             },
             {
                 model: Restaurant,
-                attributes: ["id", "owner_id", "address", "city", "state", "zip_code", "open", "close", "name", "phone", "food_type", "logo"],
+                attributes: ["id", "owner_id", "address", "city", "state", "zip_code", "name", "phone", "food_type", "logo"],
                 subQuery: false,
             }
         ]

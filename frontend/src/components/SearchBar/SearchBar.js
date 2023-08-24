@@ -70,41 +70,12 @@ export default function SearchBar() {
     };
   }, []);
 
-  function getStatus(restaurant) {
-    const currentTime = new Date();
-    const currentHour = currentTime.getHours();
-    const openingHour = parseInt(restaurant.open.split(':')[0]);
-    const closingHour = parseInt(restaurant.close.split(':')[0]);
-
-    if (currentHour >= openingHour && currentHour < closingHour) {
-      return "Open";
-    } else {
-      return "Closed";
-    }
-  }
 
   // Get the nearest future hour
   const currentHour = new Date().getHours();
   const nearestFutureHour = currentHour < 23 ? currentHour + 1 : 0;
 
-  function getTime(time) {
-    time = time.split(':');
-    let hours = Number(time[0]);
-    let minutes = Number(time[1]);
-    let timeValue;
 
-    if (hours > 0 && hours <= 12) {
-      timeValue = "" + hours;
-    } else if (hours > 12) {
-      timeValue = "" + (hours - 12);
-    } else if (hours === 0) {
-      timeValue = "12";
-    }
-
-    timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;
-    timeValue += (hours >= 12) ? " PM" : " AM";
-    return timeValue;
-  }
 
   // Get today's date
   const today = new Date().toISOString().split('T')[0];
@@ -180,7 +151,7 @@ const [selectedTime, setSelectedTime] = useState(`${nearestFutureHour.toString()
                       </p>
                     </div>
                     <div className="price">
-                      <p>{getStatus(search)} <span>{getTime(search.open)}</span> - <span>{getTime(search.close)}</span></p>
+
                     </div>
                   </NavLink>
                 </div>

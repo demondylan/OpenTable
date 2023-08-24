@@ -19,7 +19,7 @@ const handleValidationErrors = (req, _res, next) => {
   next();
 };
 
-const handleDateValidation = (req, _res, next) => {
+const handleDateValidation = (req, res, next) => {
   const validationErrors = validationResult(req);
 
   if (!validationErrors.isEmpty()) {
@@ -27,7 +27,7 @@ const handleDateValidation = (req, _res, next) => {
       .array()
       .map((error) => `${error.msg}`);
 
-      _res.status(404).json({ message: "Validation error", status: 400, errors: errors })
+    res.status(400).json({ message: "Validation error", status: 400, errors: errors });
   }
   next();
 };

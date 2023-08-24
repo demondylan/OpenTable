@@ -13,7 +13,7 @@ export const getALLRestaurants = () => async (dispatch) => {
     const response = await fetch("/api/restaurants");
     const data = await response.json();
     if (response.ok) {
-      dispatch(loadRestaurantsSuccess(data));
+     return dispatch(loadRestaurantsSuccess(data));
     }
   };
 
@@ -29,21 +29,49 @@ const FIND_RESTAURANT = 'restaurants/getSingleRestaurant';
 export const getRestaurant = (restaurantid) => async dispatch => {
     const response = await fetch(`/api/restaurants/${restaurantid}`);
         const data = await response.json();
-        dispatch(findRestaurant(data));
+        return dispatch(findRestaurant(data));
 };
 
-export const createRestaurant = (restaurantData) => async dispatch => {
-    const { address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat, lng } = restaurantData;
+export const createRestaurant = (restaurantData) => async (dispatch) => {
+    const {
+      address,
+      city,
+      zip_code,
+      description,
+      name,
+      phone,
+      state,
+      logo,
+      food_type,
+      lat,
+      lng,
+      OpeningHours, // Add OpeningHours to the destructured object
+    } = restaurantData;
+  
     const response = await csrfFetch(`/api/restaurants`, {
-        method: 'POST',
-        body: JSON.stringify({ address, city, zip_code, description, open, close, name, phone, state, logo, food_type, lat, lng }),
-    })
+      method: 'POST',
+      body: JSON.stringify({
+        address,
+        city,
+        zip_code,
+        description,
+        name,
+        phone,
+        state,
+        logo,
+        food_type,
+        lat,
+        lng,
+        OpeningHours, // Pass the OpeningHours array in the request body
+      }),
+    });
+  
     if (response.ok) {
-        const newRestaurant = await response.json();
-        dispatch(findRestaurant(newRestaurant));
-        return newRestaurant;
+      const newRestaurant = await response.json();
+      dispatch(findRestaurant(newRestaurant));
+      return newRestaurant;
     }
-};
+  };
 
 const UPDATED_RESTAURANT = 'restaurants/updateRestaurant'
  const updatedRestaurant = (restaurant) => {
@@ -70,8 +98,7 @@ export const getUserRestaurants = (user) => async dispatch => {
     const data = await response.json()
 
     let filterRestaurants = Object.values(data)
-    const ownerRestaurants = filterRestaurants.filter(restaurant => restaurant.ownerId === user.user.id)
-
+    const ownerRestaurants = filterRestaurants.filter(restaurant => restaurant.ownerId === user.id);
     let ownedRestaurantsObj = {}
 
     ownerRestaurants.map(restaurant => ownedRestaurantsObj[restaurant.id]=restaurant)
