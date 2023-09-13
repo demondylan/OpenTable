@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/demondylan/OpenTable/issues"
   },
-  "homepage": "https://github.com/demondylan/OpenTable#readme"
+  "homepage": "https://github.com/demondylan/OpenTable#readme",
+  "devDependencies": {
+    "craco": "^0.0.3"
+  }
 }
