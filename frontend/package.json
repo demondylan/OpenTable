@@ -53,6 +53,8 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-loader": "^4.0.2",
     "redux-logger": "^3.0.6"
   }
 }
