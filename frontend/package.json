@@ -13,7 +13,6 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
-    "craco": "^0.0.3",
     "crypto-browserify": "^3.12.0",
     "dotenv": "^16.3.1",
     "geocoder": "^0.2.3",
@@ -32,9 +31,9 @@
     "redux-thunk": "^2.4.2"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
