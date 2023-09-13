@@ -30,9 +30,6 @@
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2"
   },
-  "scripts": {
-    "eject": "react-scripts eject"
-  },
   "eslintConfig": {
     "extends": "react-app"
   },
