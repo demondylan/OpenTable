@@ -850,8 +850,6 @@ border: 2px solid gray;
   cursor: pointer;
   border-radius: 4px;
 }
-
-/* Keep your existing style for clickable-time-button if needed */
 .clickable-time-button {
   /* Your existing styles here */
 }
